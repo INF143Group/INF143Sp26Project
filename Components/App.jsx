@@ -5,8 +5,6 @@ import Footer from "./footer.jsx";
 import ProblemDisplay from './ProblemDisplay.jsx';
 import IdePanel from "./IDEPanel.jsx";
 import ExpandablePanel from "./ExpandablePanel.jsx";
-// LOGIN SECTION - Partha
-import Login from "./Login.jsx";
 
 function App() {
     return (
@@ -52,9 +50,6 @@ function App() {
                 <div className="expandable-ide">
                     <IdePanel />
                 </div>
-
-                {/* LOGIN SECTION - Partha */}
-                <Login />
 
                 {/* row 10 - Bottom Nav/Footer */}
                 <div className="div10" id="bottom-nav-bar">

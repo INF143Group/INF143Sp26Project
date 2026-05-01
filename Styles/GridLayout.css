@@ -1,0 +1,613 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Layout Grid --- */
+.parent {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 1.8fr;
+    grid-template-rows:
+        max(36px, 5vh)
+        max(14px, 2.5vh)
+        repeat(3, 1fr)
+        max(14px, 2.5vh)
+        repeat(3, 1fr)
+        max(36px, 5vh);
+    grid-gap: 8px;
+    height: 100vh;
+    min-width: 900px;
+    min-height: 500px;
+    background-color: antiquewhite;
+    padding: 0 8px;
+    width: 100%;
+}
+
+/* --- Navbar --- */
+.navbar {
+    --bs-navbar-padding-y: 0;
+}
+
+.nav-link {
+    color: #e8e0d8 !important;
+    padding: 0 8px !important;
+    user-select: none;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+    border-right: 1px solid rgba(232, 224, 216, 0.4)
+}
+
+.nav-link:last-child{
+    border-right: none;
+}
+
+.nav-link:hover {
+    color: #d0e6da !important;
+    text-shadow: 0 0 8px rgba(208, 230, 218, 0.8);
+}
+
+/* --- Content Sections --- */
+.section-tags, .section-content {
+    height: 100%;
+    width: 100%;
+    border: 2px solid #000;
+    font-size: clamp(11px, 1.2vw, 15px);
+    overflow: hidden;
+}
+
+.section-tags {
+    position: relative;
+    z-index: 2;
+    background-color: #d0e6da;
+    padding: 0 clamp(4px, 0.5vw, 10px);
+    border-radius: 6px 6px 0 0;
+}
+
+.section-tags p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.section-content {
+    z-index: 1;
+    padding: clamp(4px, 0.5vw, 10px);
+    background-color: #f5f0eb;
+    border-radius: 6px;
+}
+
+/* --- Grid Areas --- */
+.div1 { grid-area: 1 / 1 / 2 / 4; background-color: #322D28; align-items: center; margin: 0 -8px; }
+.div2 { grid-area: 2 / 1 / 3 / 2; }
+.div5 { grid-area: 2 / 1 / 6 / 2; }
+.div6 { grid-area: 6 / 1 / 7 / 2; align-self: start; z-index: 3; }
+.div7 { grid-area: 6 / 1 / 10 / 2; display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+.div10 { grid-area: 10 / 1 / 11 / 4; background-color:#322D28; margin: 0 -8px; }
+
+/* Expandable panel wrappers */
+.expandable-problem {
+    grid-area: 2 / 2 / 10 / 3;
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    min-height: 0;
+}
+
+/* Header must not stretch inside the flex column */
+.expandable-problem .expandable-header {
+    height: auto;
+    flex-shrink: 0;
+}
+
+/* Problem body hugs content height */
+.expandable-problem .expandable-body {
+    height: auto;
+}
+
+.expandable-ide {
+    grid-area: 2 / 3 / 10 / 4;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+}
+
+.expandable-ide .ide-header {
+    height: auto;
+    flex-shrink: 0;
+}
+
+/* ide-container fills all remaining space below the header */
+.expandable-ide > #ide-container {
+    flex: 1;
+    min-height: 0;
+}
+
+/* --- ExpandablePanel internals --- */
+.expandable-header {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    transition: background-color 0.15s ease;
+    border-radius: 6px 6px 0 0;
+}
+
+.expandable-header:hover {
+    background-color: #bdd8d0;
+}
+
+.expand-icon {
+    font-size: 14px;
+    color: #5a7a6e;
+    line-height: 1;
+    margin-right: 2px;
+    transition: transform 0.2s ease;
+}
+
+.expandable-header:hover .expand-icon {
+    transform: scale(1.2);
+}
+
+.expandable-body {
+    position: relative;
+    overflow: hidden;
+    border-top: none;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    cursor: pointer;
+}
+
+.expandable-body:hover {
+    background-color: #f0ebe3;
+}
+
+.expandable-inner {
+    width: 100%;
+    height: 100%;
+}
+
+/* Overflow blur + Continue Reading */
+.overflow-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: linear-gradient(to bottom, transparent, #f5f0eb 70%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 8px;
+    pointer-events: none;
+}
+
+.continue-reading-btn {
+    pointer-events: all;
+    background-color: #322D28;
+    color: #d0e6da;
+    border: 2px solid #d0e6da;
+    border-radius: 100px;
+    padding: 5px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.continue-reading-btn:hover {
+    background-color: #d0e6da;
+    color: #322D28;
+}
+
+/* --- Fullscreen overlay --- */
+.overlay-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 26, 22, 0.72);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: overlay-in 0.18s ease;
+}
+
+@keyframes overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.overlay-panel {
+    position: relative;
+    background: #f5f0eb;
+    border: 2px solid #322D28;
+    border-radius: 10px;
+    width: 96vw;
+    height: 94vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+    animation: panel-in 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes panel-in {
+    from { transform: scale(0.96) translateY(8px); opacity: 0; }
+    to   { transform: scale(1) translateY(0);      opacity: 1; }
+}
+
+/* IDE overlay same size — full screen */
+.overlay-ide {
+    width: 96vw;
+    height: 94vh;
+}
+
+.overlay-header {
+    padding: 14px 52px 12px 20px;
+    border-bottom: 2px solid #000;
+    flex-shrink: 0;
+}
+
+.overlay-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: #322D28;
+    letter-spacing: 0.02em;
+}
+
+.overlay-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px 20px 20px;
+}
+
+/* IDE overlay: both axes scrollable */
+.overlay-ide .overlay-content {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.overlay-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: none;
+    border: 2px solid #322D28;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #322D28;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    z-index: 10;
+}
+
+.overlay-close:hover {
+    background-color: #322D28;
+    color: #d0e6da;
+}
+
+/* --- Footer --- */
+.footer-navbar { width: 100%; height: 100%; }
+.footer-container { gap: 0; }
+.footer-copyright, .footer-nav { font-size: clamp(10px, 1vw, 13px); line-height: 1.2; user-select: none; }
+.footer-copyright { color: #e8e0d8; }
+.footer-dot { color: #e8e0d8; align-self: center; }
+.footer-copyright { padding-bottom: 5px; }
+
+/* --- Chat UI --- */
+.card {
+    width: 100%;
+    height: 100%;
+    background-color: #f5f0eb;
+    border: 0;
+    border-radius: 6px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.chat-window { flex: 1; overflow-y: auto; min-height: 0; }
+.message-list { list-style: none; margin: 0; padding: 0; color: black; }
+.chat-input { display: flex; align-items: center; padding: 10px; border-top: 2px solid #ccc; color: black; }
+.message-input { flex: 1; border: none; outline: none; padding: 5px; font-size: 14px; background: #fff; color: black; }
+.send-button { border: none; outline: none; background-color: #333; color: #fff; font-size: 14px; padding: 5px 10px; cursor: pointer; }
+.send-button:hover { background-color: rgb(255, 255, 255); color: rgb(0, 0, 0); box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25); }
+
+/* --- Problem Display --- */
+.problem-display { overflow: visible; display: flex; flex-direction: column; gap: 10px; font-size: clamp(11px, 1.1vw, 14px); color: #2c2c2c; }
+.problem-header { display: flex; align-items: center; gap: 12px; }
+.problem-title { font-weight: 700; font-size: clamp(13px, 1.3vw, 17px); }
+.problem-difficulty { font-weight: 600; font-size: clamp(11px, 1vw, 13px); }
+.problem-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.problem-tag { background-color: #d0e6da; color: #2c2c2c; border-radius: 4px; padding: 2px 8px; font-size: clamp(10px, 0.9vw, 12px); }
+.problem-description { margin: 0; line-height: 1.5; }
+.problem-section { display: flex; flex-direction: column; gap: 6px; }
+.problem-example {
+    background-color: #f0ebe5;
+    border-left: 3px solid #d0e6da;
+    padding: 6px 10px;
+    border-radius: 0 4px 4px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: monospace;
+    font-size: clamp(10px, 0.95vw, 13px);
+}
+.problem-label { font-weight: 600; font-family: sans-serif; }
+.problem-constraints {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: monospace;
+    font-size: clamp(10px, 0.95vw, 13px);
+}
+.problem-loading { color: #999; font-size: 13px; padding: 10px; }
+
+/* Container for the editor components */
+.editor-wrapper {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Line number column styling */
+.line-numbers {
+    padding-top: 20px;
+    padding-left: 5px;
+    padding-right: 10px;
+    background-color: #e0dcd9;
+    color: #888;
+    text-align: right;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 21px;
+    user-select: none;
+    overflow: hidden;
+    border-right: 1px solid #ccc;
+    min-width: 40px;
+    border-radius: 0 6px 0 6px;
+}
+
+.line-number-slot {
+    height: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    transition: color 0.1s ease;
+}
+
+.line-number-active {
+    color: #c8b89a;
+    font-weight: 700;
+}
+
+/* Wraps render layer + textarea in inline mode */
+.editable-region {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+}
+
+/* Render layer — visual display behind transparent textarea */
+.render-layer {
+    position: absolute;
+    inset: 0;
+    padding-top: 20px;
+    padding-bottom: 60px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 21px;
+    overflow: hidden;
+    pointer-events: none;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: inherit;
+    box-sizing: border-box;
+}
+
+/* Each logical line in the render layer gets a hanging indent */
+.render-line {
+    display: block;
+    padding-left: 2ch;
+    text-indent: -2ch;
+    line-height: 21px;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+.render-line::before {
+    content: '';
+}
+
+/* Base textarea styles */
+.editable-area {
+    flex: 1;
+    height: 100%;
+    padding-top: 20px;
+    padding-bottom: 60px;
+    padding-left: 10px;
+    box-sizing: border-box;
+    outline: none;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 21px;
+    text-align: left;
+    resize: none;
+    border: none;
+    background: transparent;
+    caret-color: #322D28;
+}
+
+/* Inline mode: transparent so render layer shows through */
+.editable-transparent {
+    position: absolute;
+    inset: 0;
+    color: transparent;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 10px;
+    caret-color: #322D28;
+}
+
+/* Overlay mode: fully visible, no wrap, horizontal scroll */
+.editable-overlay {
+    position: relative;
+    color: inherit;
+    white-space: pre;
+    word-wrap: normal;
+    overflow-y: auto;
+    overflow-x: auto;
+    width: 100%;
+}
+
+/* Ensure #ide-container remains relative for the run button */
+#ide-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #000;
+    border-radius: 0 0 6px 6px;
+    border-top: none;
+    background-color: #f5f0eb;
+    padding-top: 5px;
+}
+
+/* Overlay IDE container fills the overlay content area */
+#ide-container-overlay {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    background-color: #f5f0eb;
+    padding-top: 5px;
+}
+
+/* editor-wrapper inside overlay must allow x-scroll to pass through */
+#ide-container-overlay .editor-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+/* From Uiverse.io by gharsh11032000 "FancyButton" */
+.animated-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 28px 8px 16px;
+    border: 2px solid #d0e6da;
+    font-size: 13px;
+    background-color: #322D28;
+    border-radius: 100px;
+    font-weight: 600;
+    color: #d0e6da;
+    cursor: pointer;
+    overflow: hidden;
+    letter-spacing: 0.04em;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button svg {
+    position: absolute;
+    width: 16px;
+    fill: #d0e6da;
+    z-index: 9;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button .arr-1 { right: 10px; }
+.animated-button .arr-2 { left: -20%; }
+
+.animated-button .circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: #d0e6da;
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button .text {
+    position: relative;
+    z-index: 1;
+    transform: translateX(-8px);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animated-button:hover {
+    background-color: #d0e6da;
+    border-color: #322D28;
+    color: #322D28;
+    border-radius: 12px;
+    box-shadow: none;
+}
+
+.animated-button:hover svg {
+    fill: #322D28;
+}
+
+.animated-button:hover .arr-1 { right: -20%; }
+.animated-button:hover .arr-2 { left: 10px; }
+.animated-button:hover .text { transform: translateX(8px); }
+.animated-button:hover .circle { width: 160px; height: 160px; opacity: 1; }
+
+.animated-button:active {
+    scale: 0.95;
+}
+
+/* Wrapper to pin the button to bottom-right */
+.button-wrapper {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
+}

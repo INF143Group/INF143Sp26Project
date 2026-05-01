@@ -1,8 +1,13 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+// LOGIN SECTION - Partha
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
+    // LOGIN SECTION - Partha
+    const navigate = useNavigate();
+
     return (
         <Navbar data-bs-theme="dark" style={{alignSelf: 'center'}}>
             <Container fluid>
@@ -20,7 +25,8 @@ const NavBar = () => {
                     </Nav>
 
                     <Nav className="ms-5 me-9">
-                        <Nav.Link href="#login">Login</Nav.Link>
+                        {/* LOGIN SECTION - Partha */}
+                        <Nav.Link onClick={() => navigate('/login')}>Login</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

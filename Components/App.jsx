@@ -1,10 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./GridLayout.css";
+import "../Styles/GridLayout.css";
 import NavBar from "./nav-bar.jsx";
 import Footer from "./footer.jsx";
 import ProblemDisplay from './ProblemDisplay.jsx';
 import IdePanel from "./IDEPanel.jsx";
 import ExpandablePanel from "./ExpandablePanel.jsx";
+// LOGIN SECTION - Partha
+import Login from "./Login.jsx";
 
 function App() {
     return (
@@ -50,6 +52,9 @@ function App() {
                 <div className="expandable-ide">
                     <IdePanel />
                 </div>
+
+                {/* LOGIN SECTION - Partha */}
+                <Login />
 
                 {/* row 10 - Bottom Nav/Footer */}
                 <div className="div10" id="bottom-nav-bar">

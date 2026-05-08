@@ -1,3 +1,18 @@
 body{
     --bg: aqua;
 }
+
+.stack {
+    position: relative;
+    width: 100vw;  /* Or whatever size you need */
+    height: 100vh;  /* Or whatever size you need */
+    margin: 0 auto;
+}
+.stack > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.top-layer    { z-index: 7; pointer-events: none}

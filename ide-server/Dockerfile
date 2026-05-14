@@ -11,15 +11,15 @@ RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /
     apt-get update && apt-get install -y curl
 
 # Cache bust
-ARG CACHE_BUST=5
+ARG CACHE_BUST=6
 
-# Check what packages are available
+# Start server, install packages, then stop
 RUN node /piston_api/src/index.js & \
     sleep 8 && \
-    echo "=== GET /api/v2/runtimes ===" && \
-    curl -s http://localhost:2000/api/v2/runtimes && \
-    echo "=== GET /api/v2/packages ===" && \
-    curl -s http://localhost:2000/api/v2/packages && \
+    curl -s -X POST http://localhost:2000/api/v2/packages -H "Content-Type: application/json" -d '{"language":"python","version":"3.10.0"}' && \
+    curl -s -X POST http://localhost:2000/api/v2/packages -H "Content-Type: application/json" -d '{"language":"java","version":"15.0.2"}' && \
+    curl -s -X POST http://localhost:2000/api/v2/packages -H "Content-Type: application/json" -d '{"language":"gcc","version":"10.2.0"}' && \
+    sleep 120 && \
     kill %1 || true
 
 ENTRYPOINT []

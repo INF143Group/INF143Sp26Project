@@ -5,4 +5,4 @@ USER root
 RUN mkdir -p /piston/data/isolate
 
 ENTRYPOINT []
-CMD ["/bin/sh", "-c", "find /usr/local/bin /srv /app /home -type f 2>/dev/null && cat /proc/1/cmdline 2>/dev/null || echo 'not found'"]
+CMD ["/bin/sh", "-c", "mkdir -p /piston/data/isolate && node /piston_api/src/index.js"]

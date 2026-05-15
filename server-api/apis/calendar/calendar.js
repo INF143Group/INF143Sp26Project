@@ -34,5 +34,8 @@ function getEventsJsonForUser(userId){
 function getEventsFromDB(userId){
 
 }
+async function uploadEvent(eventObj){
+    return {status: "success", event: eventObj};
+}
 
-export default {getEventsJsonForUser};
+export default {getEventsJsonForUser, uploadEvent};

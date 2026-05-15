@@ -10,18 +10,58 @@ import "../Styles/Calendar.css";
 
 const ROOT = "http://localhost:8080/";  
 
-function displayAddEventDiv(arg){
+let calendarRef = null;
+let eventPopupRef = null;
+let defaultDate, setDefaultDate = null;
+let isSchedulerOpen, setIsSchedulerOpen = null;
+
+function displayAddEventDiv(e){
+    console.log(e);
+    setDefaultDate(e.dateStr);
     setIsSchedulerOpen(true);
 }
-function hideAddEventDiv(dateObj){
-    if (dateObj.success){
-        toast.success(() => AddSubtext(dateObj),{
-            className: '!w-fit !max-w-none',
-        });
-    } else{
-        // toast.error("Event addition cancelled.");
-        toast.warn("Not scheduled: " + dateObj.msg);
+async function uploadEvent(dateObj){
+    const resp = await fetch(ROOT + "api/calendar", {
+        method: "POST",
+        body: JSON.stringify(dateObj),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!resp.ok) {
+        throw new Error("Failed to upload event");
     }
+
+    let respJson = await resp.json();
+    if (respJson.success===false){
+        throw new Error("Failed to parse event");
+    }
+    return respJson;
+}
+function getUserId(){
+    return 111;
+}
+function submitAndHideDiv(dateObj){
+    if (! dateObj.success){
+        toast.warn("Not scheduled: " + dateObj.msg);
+        setIsSchedulerOpen(false);
+        return;
+    }
+
+    dateObj.userId=getUserId();
+
+    uploadEvent(dateObj).then((status) => {
+        if (status.success===false){
+            toast.error("Failed to schedule event.");
+        } else {
+            toast.success(() => AddSubtext(dateObj), {
+                className: '!w-fit !max-w-none',
+            });
+        }
+    }).catch(() => {
+        toast.error("Failed to schedule event.");
+    });
     setIsSchedulerOpen(false);
 }
 function AddSubtext(dateObj){
@@ -43,7 +83,7 @@ function isUserLoggedIn(){
 
 async function getEvents(){
     if (! isUserLoggedIn()){
-        console.log("failed user login");
+        console.error("failed user login");
         return [];
     }
 
@@ -57,7 +97,6 @@ async function getEvents(){
         console.error("Failed to parse resp json");
         return [];
     }
-    console.log(respJson);
 
     let returnEvents = [];
     let myStartTime = null;
@@ -65,7 +104,6 @@ async function getEvents(){
     respJson.events.forEach((event) => {
         myStartTime = new Date(event.date.day + " " + event.date.time);
         myEndTime = new Date(myStartTime.getTime() + event.lengthMinutes*60000);
-        console.log("dates", myStartTime, myEndTime);
 
         returnEvents.push({
             id: event.id,
@@ -77,12 +115,17 @@ async function getEvents(){
     return returnEvents;
 }
 
+function addEvent(){
+
+}
+
 export default function Calendar(){
 
-    const calendarRef = useRef(null);
-    const eventPopupRef = useRef(null);
+    calendarRef = useRef(null);
+    eventPopupRef = useRef(null);
 
-    const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
+    [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
+    [defaultDate, setDefaultDate] = useState(null);
 
     function SchedulerDiv(){
         return(
@@ -111,23 +154,23 @@ export default function Calendar(){
                     customButtons={{
                         addEventTodayButton: {
                             text: 'add an event today',
-                            click: displayAddEventDiv
+                            click: () => {
+                                let date = new Date(Date.now());
+                                let dateStr = date.getFullYear() + "-" + String((date.getMonth()+1)).padStart(2, '0') + "-" + date.getDate();
+                                displayAddEventDiv({dateStr: dateStr})
+                            }
                         }
                     }}
                     headerToolbar= {{
                         center: 'addEventTodayButton'
                     }}
-                    // events={[{
-                    //     title: "test event",
-                    //     start: new Date("5/14/2026 2:00 PM"),
-                    //     end: new Date(new Date("5/14/2026 2:00 PM").getTime() + 90*60000)
-                    // }]}
                     events={getEvents}
                 />
                 <div className="top-layer">
                     <EventAddPopup
                     isOpen={isSchedulerOpen}
-                    onClose={hideAddEventDiv}
+                    onClose={submitAndHideDiv}
+                    defaultDate={defaultDate}
                     />
                 </div>
             </div>

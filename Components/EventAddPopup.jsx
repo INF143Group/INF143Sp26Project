@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import "../Styles/EventPopup.css";
 
-export default function EventAddPopup({ isOpen, onClose }){
+export default function EventAddPopup({ isOpen, onClose, defaultDate }){
     if (isOpen==false) return null;
     return (
         <div class="appointment-form">
@@ -13,10 +13,10 @@ export default function EventAddPopup({ isOpen, onClose }){
 
             <form action={handleSubmit}>
                 <label for="date">Date</label>
-                <input type="date" id="date" name="date" placeholder="5-8-2026" />
+                <input type="date" id="date" name="date" defaultValue={defaultDate} />
 
                 <label for="time">Start Time</label>
-                <input type="time" id="time" name="time" />
+                <input type="time" id="time" name="time" defaultValue="08:00" />
 
                 <label for="name">Interviewer's Name</label>
                 <input type="text" id="name" name="name" placeholder="John Doe" />

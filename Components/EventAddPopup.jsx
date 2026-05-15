@@ -39,6 +39,9 @@ export default function EventAddPopup({ isOpen, onClose }){
             interviewerName: formData.get("name"),
             interviewerEmail: formData.get("email"),
         }
+
+        // fetch post
+
         if (dateObj.date=="" || dateObj.time=="" || dateObj.interviewerName=="" || dateObj.interviewerEmail==""){
             dateObj.success = false;
             dateObj.msg= "Please fill out all fields.";

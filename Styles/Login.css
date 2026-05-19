@@ -100,3 +100,21 @@
 .login-submit-btn:hover {
   background-color: #9b7dd4;
 }
+
+
+.login-create-text {
+  color: white;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.login-create-link {
+  color: #a78bfa;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.login-create-link:hover {
+  color: white;
+}

@@ -4,6 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 // LOGIN SECTION - Partha
 import { useNavigate } from 'react-router-dom';
 
+
 const NavBar = () => {
     // LOGIN SECTION - Partha
     const navigate = useNavigate();
@@ -23,6 +24,7 @@ const NavBar = () => {
                         <Nav.Link href="#resources">Resources</Nav.Link>
                         <Nav.Link href="calendar">Calendar</Nav.Link>
                         <Nav.Link href="#about">About</Nav.Link>
+                        <Nav.Link onClick={() => navigate("/help")}>Help</Nav.Link>
                     </Nav>
 
                     <Nav className="ms-5 me-9">

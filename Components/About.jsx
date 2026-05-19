@@ -1,5 +1,5 @@
-import NavBar from "../nav-bar";
-import Footer from "../footer";
+import NavBar from "./nav-bar";
+import Footer from "./footer";
 
 function About() {
     return (

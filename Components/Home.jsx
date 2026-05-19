@@ -1,5 +1,5 @@
-import NavBar from "../nav-bar";
-import Footer from "../footer";
+import NavBar from "./nav-bar";
+import Footer from "./footer";
 
 function Home() {
     return (
@@ -23,7 +23,6 @@ function Home() {
                 <div className="bg-light border p-5 mb-5">
                     <div className="bg-white border p-4 w-25">
                         <h4>Practice Problems</h4>
-
                         <p>
                             Aimed to push your coding abilities!
                         </p>
@@ -35,7 +34,6 @@ function Home() {
                     <div className="col-md-6">
                         <div className="bg-light border p-4 h-100">
                             <h4>Community Support</h4>
-
                             <p>
                                 Support for multiple languages and
                                 collaborative problem solving!
@@ -46,7 +44,6 @@ function Home() {
                     <div className="col-md-6">
                         <div className="bg-light border p-4 h-100">
                             <h4>Resources</h4>
-
                             <p>
                                 Learn from professionals in the industry.
                             </p>

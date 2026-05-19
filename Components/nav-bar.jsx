@@ -18,11 +18,11 @@ const NavBar = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     {/* Middle Group (Center-Right) */}
                     <Nav className="ms-auto">
-                        <Nav.Link href="#my-dashboard">My Dashboard</Nav.Link>
-                        <Nav.Link href="#problems">Problems</Nav.Link>
-                        <Nav.Link href="#chat">Chats</Nav.Link>
-                        <Nav.Link href="#resources">Resources</Nav.Link>
-                        <Nav.Link href="calendar">Calendar</Nav.Link>
+                        <Nav.Link href="/my-dashboard">My Dashboard</Nav.Link>
+                        <Nav.Link href="/problems">Problems</Nav.Link>
+                        <Nav.Link href="/chat">Chats</Nav.Link>
+                        <Nav.Link href="/resources">Resources</Nav.Link>
+                        <Nav.Link href="/calendar">Calendar</Nav.Link>
                         <Nav.Link onClick={() => navigate("/about")}>About</Nav.Link>
                         <Nav.Link onClick={() => navigate("/help")}>Help</Nav.Link>
                     </Nav>

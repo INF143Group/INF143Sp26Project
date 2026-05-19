@@ -1,5 +1,5 @@
-import NavBar from "../nav-bar";
-import Footer from "../footer";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function About() {
     return (

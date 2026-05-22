@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ADD THIS
+import { useNavigate } from "react-router-dom";
+import { supabase } from './supabase.js';
 import "../Styles/Login.css";
 import bgImage from "./assets/login-bg.png";
 import bgMain from "./assets/login-m.png";
@@ -7,16 +8,25 @@ import bgMain from "./assets/login-m.png";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // ADD THIS
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log("Email:", email, "Password:", password);
+  const handleLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      alert("Login failed: " + error.message);
+    } else {
+      alert("Login successful!");
+      navigate("/");
+    }
   };
 
   return (
     // LOGIN SECTION - Partha
     <div className="login-wrapper" style={{ backgroundImage: `url(${bgMain})` }}>
-      {/* Changed Login button to Back button */}
       <button className="login-top-btn" onClick={() => navigate("/")}>Back</button>
 
       <div className="login-card" style={{ backgroundImage: `url(${bgImage})` }}>
@@ -40,10 +50,6 @@ function Login() {
           />
 
           <button className="login-submit-btn" onClick={handleLogin}>
-            Login
-          </button>
-
-        <button className="login-submit-btn" onClick={handleLogin}>
             Login
           </button>
 

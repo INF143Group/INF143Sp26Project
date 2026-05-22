@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from './supabase.js';
 import "../Styles/Login.css";
 import bgImage from "./assets/login-bg.png";
 import bgMain from "./assets/login-m.png";
@@ -13,13 +14,43 @@ function Create() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleCreate = () => {
+const handleCreate = async () => {
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    console.log("Creating account for:", email);
-    // Add your create account logic / API call here
+
+    // Step 1 - Create auth account
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      alert("Error creating account: " + error.message);
+      return;
+    }
+
+    // Step 2 - Insert into users table
+    const { error: userError } = await supabase
+      .from('users')
+      .insert([{
+        user_id: data.user.id,
+        username: username,
+        email: email,
+        display_name: username,
+        phone: phone,
+        linkedin: linkedin,
+        role: 'user',
+        is_active: true,
+      }]);
+
+    if (userError) {
+      alert("Account created but profile error: " + userError.message);
+    } else {
+      alert("Account created successfully! Please login.");
+      navigate("/login");
+    }
   };
 
   return (

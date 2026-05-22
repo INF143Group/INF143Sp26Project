@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import NavBar from "./nav-bar";
 import Footer from "./footer";
+=======
+import React, { useState } from "react";
+import NavBar from "../Components/nav-bar.jsx";
+>>>>>>> 51dc9c91c00c2ca55114133fee08db100889c275
 
 function About() {
     return (

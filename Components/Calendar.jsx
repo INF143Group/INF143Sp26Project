@@ -8,12 +8,129 @@ import EventAddPopup from "./EventAddPopup.jsx";
 
 import "../Styles/Calendar.css";
 
+const ROOT = "http://localhost:8080/";  
+
+let calendarRef = null;
+let eventPopupRef = null;
+let defaultDate, setDefaultDate = null;
+let isSchedulerOpen, setIsSchedulerOpen = null;
+
+function displayAddEventDiv(e){
+    console.log(e);
+    setDefaultDate(e.dateStr);
+    setIsSchedulerOpen(true);
+}
+async function uploadEvent(dateObj){
+    const resp = await fetch(ROOT + "api/calendar", {
+        method: "POST",
+        body: JSON.stringify(dateObj),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!resp.ok) {
+        throw new Error("Failed to upload event");
+    }
+
+    let respJson = await resp.json();
+    if (respJson.success===false){
+        throw new Error("Failed to parse event");
+    }
+    return respJson;
+}
+function getUserId(){
+    return 111;
+}
+function submitAndHideDiv(dateObj){
+    if (! dateObj.success){
+        toast.warn("Not scheduled: " + dateObj.msg);
+        setIsSchedulerOpen(false);
+        return;
+    }
+
+    dateObj.userId=getUserId();
+
+    uploadEvent(dateObj).then((status) => {
+        if (status.success===false){
+            toast.error("Failed to schedule event.");
+        } else {
+            calendarRef.current.getApi().addEvent({
+                title: "Interview with " + dateObj.interviewerName,
+                start: dateObj.date + " " + dateObj.time,
+            })
+            calendarRef.current.getApi().refetchEvents();
+            toast.success(() => AddSubtext(dateObj), {
+                className: '!w-fit !max-w-none',
+            });
+        }
+    }).catch(() => {
+        toast.error("Failed to schedule event.");
+    });
+    setIsSchedulerOpen(false);
+}
+function AddSubtext(dateObj){
+    return (
+        <div className="grid grid-cols-[1fr_1px_80px] w-full">
+            <div className="flex flex-col p-3">
+                <h4 className="text-zinc-800 text-sm font-semibold">Event Submitted</h4>
+                <p className="m-0 text-sm">Interviewer: <b>{dateObj.interviewerName}</b></p>
+                <p className="m-0 text-sm whitespace-nowrap">Interviewer email: <b>{dateObj.interviewerEmail}</b></p>
+                <p className="m-0 text-sm">Date: <b>{dateObj.date}</b></p>
+                <p className="m-0 text-sm">Time: <b>{dateObj.time}</b></p>
+            </div>
+        </div>
+    )
+}
+function isUserLoggedIn(){
+    return true;
+}
+
+async function getEvents(){
+    if (! isUserLoggedIn()){
+        console.error("failed user login");
+        return [];
+    }
+
+    const resp = await fetch(ROOT + "api/calendar?userId=111");
+    if (!resp.ok) {
+        console.error("Failed to fetch events");
+        return [];
+    }
+    const respJson = await resp.json();
+    if (respJson.success===false){
+        console.error("Failed to parse resp json");
+        return [];
+    }
+
+    let returnEvents = [];
+    let myStartTime = null;
+    let myEndTime = null;
+    respJson.events.forEach((event) => {
+        myStartTime = new Date(event.date.day + " " + event.date.time);
+        myEndTime = new Date(myStartTime.getTime() + event.lengthMinutes*60000);
+
+        returnEvents.push({
+            id: event.id,
+            title: "Interview with " + event.interviewer.name,
+            start : myStartTime,
+            end: myEndTime
+        })
+    });
+    return returnEvents;
+}
+
+function addEvent(){
+
+}
+
 export default function Calendar(){
 
-    const calendarRef = useRef(null);
-    const eventPopupRef = useRef(null);
+    calendarRef = useRef(null);
+    eventPopupRef = useRef(null);
 
-    const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
+    [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
+    [defaultDate, setDefaultDate] = useState(null);
 
     function SchedulerDiv(){
         return(
@@ -22,34 +139,6 @@ export default function Calendar(){
             </div>
         );
     }
-
-    function displayAddEventDiv(arg){
-        setIsSchedulerOpen(true);
-    }
-    function hideAddEventDiv(dateObj){
-        if (dateObj.success){
-            toast.success(() => AddSubtext(dateObj),{
-                className: '!w-fit !max-w-none',
-            });
-        } else{
-            // toast.error("Event addition cancelled.");
-            toast.warn("Not scheduled: " + dateObj.msg);
-        }
-        setIsSchedulerOpen(false);
-    }
-    function AddSubtext(dateObj){
-        return (
-            <div className="grid grid-cols-[1fr_1px_80px] w-full">
-                <div className="flex flex-col p-3">
-                    <h4 className="text-zinc-800 text-sm font-semibold">Event Submitted</h4>
-                    <p className="m-0 text-sm">Interviewer: <b>{dateObj.interviewerName}</b></p>
-                    <p className="m-0 text-sm whitespace-nowrap">Interviewer email: <b>{dateObj.interviewerEmail}</b></p>
-                    <p className="m-0 text-sm">Date: <b>{dateObj.date}</b></p>
-                    <p className="m-0 text-sm">Time: <b>{dateObj.time}</b></p>
-                </div>
-            </div>
-        )
-    }    
 
     return(
         <div className="calendar-wrapper">
@@ -70,17 +159,23 @@ export default function Calendar(){
                     customButtons={{
                         addEventTodayButton: {
                             text: 'add an event today',
-                            click: displayAddEventDiv
+                            click: () => {
+                                let date = new Date(Date.now());
+                                let dateStr = date.getFullYear() + "-" + String((date.getMonth()+1)).padStart(2, '0') + "-" + date.getDate();
+                                displayAddEventDiv({dateStr: dateStr})
+                            }
                         }
                     }}
                     headerToolbar= {{
                         center: 'addEventTodayButton'
                     }}
+                    events={getEvents}
                 />
                 <div className="top-layer">
                     <EventAddPopup
                     isOpen={isSchedulerOpen}
-                    onClose={hideAddEventDiv}
+                    onClose={submitAndHideDiv}
+                    defaultDate={defaultDate}
                     />
                 </div>
             </div>

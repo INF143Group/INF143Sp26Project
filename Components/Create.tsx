@@ -32,18 +32,19 @@ const handleCreate = async () => {
     }
 
     // Step 2 - Insert into users table
-    const { error: userError } = await supabase
-      .from('users')
-      .insert([{
-        user_id: data.user.id,
-        username: username,
-        email: email,
-        display_name: username,
-        phone: phone,
-        linkedin: linkedin,
-        role: 'user',
-        is_active: true,
-      }]);
+   const { error: userError } = await supabase
+  .from('users')
+  .insert([{
+    user_id: data.user.id,
+    username: username,
+    email: email,
+    display_name: username,
+    phone: phone,
+    linkedin: linkedin,
+    role: 'user',
+    is_active: true,
+    password_hash: 'managed_by_supabase_auth', // ADD THIS
+  }]);
 
     if (userError) {
       alert("Account created but profile error: " + userError.message);

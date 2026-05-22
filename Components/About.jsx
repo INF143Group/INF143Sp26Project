@@ -1,7 +1,5 @@
 import NavBar from "./nav-bar";
 import Footer from "./footer";
-import React, { useState } from "react";
-import NavBar from "../Components/nav-bar.jsx";
 
 function About() {
     return (

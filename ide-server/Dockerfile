@@ -14,7 +14,7 @@ RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /
 ARG CACHE_BUST=6
 
 # Start server, install packages, then stop
-RUN node /piston_api/src/index.js & \
+RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
     sleep 8 && \
     curl -s -X POST http://localhost:2000/api/v2/packages -H "Content-Type: application/json" -d '{"language":"python","version":"3.10.0"}' && \
     curl -s -X POST http://localhost:2000/api/v2/packages -H "Content-Type: application/json" -d '{"language":"java","version":"15.0.2"}' && \
@@ -29,6 +29,6 @@ RUN cd / && npm install
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \
   "mkdir -p /piston/data/jobs && \
-   node /piston_api/src/index.js & \
+   PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
    sleep 3 && \
    node /proxy.js"]

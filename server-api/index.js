@@ -22,9 +22,7 @@ app.route("/api/calendar")
         res.send(events);
     })
     .post((req, res) => {
-    calendar.uploadEvent(req.body).then((status) => {
-        res.send(status)
-        });
+        calendar.catchNewEventRequest(req, res);
     });
 
 app.listen(8080, (req, res) => {

@@ -42,14 +42,11 @@ async function getEventsJsonForUser(userId){
     .or(`interviewer_id.eq.${userId},interviewee_id.eq.${userId}`);
         
     if (error || !eventsData){
-        console.error("Failed to get events from DB: ", error?.message || "Unknown error");
         return {
             success: false,
             message: error
         }
     }
-
-    console.log("Fetched events data: ", eventsData);
 
     // Find the primary user object from the first event match to populate top-level fields
     const primaryUser = eventsData[0].interviewer.id === userId 
@@ -64,12 +61,93 @@ async function getEventsJsonForUser(userId){
         }
     }
 }
-function getEventsFromDB(userId){
+async function uploadEvent(eventData){
+    if (!eventData){
+        return {
+            success: false,
+            message: "No event data provided"
+        }
+    }
+
+    let userIds = await validateUsersAndReturnUserIds(eventData.interviewerEmail, eventData.userId);
+    
+    if (!userIds) {
+        console.log("failed to validate userIds: ", userIds);
+        return {
+            success: false,
+            message: "Failed to validate interviewer email"
+        };
+    }
+    if (userIds.interviewerId === userIds.intervieweeId){
+        console.log("interviewer and interviewee cannot be the same user: ", userIds);
+        return {
+            success: false,
+            message: "Interviewer and interviewee cannot be the same user"
+        };
+    }
+
+    const {error} = await (await getConnection())
+        .from("events")
+        .insert({
+            interviewee_id: userIds.intervieweeId,
+            interviewer_id: userIds.interviewerId,
+            event_at: new Date(eventData.date + "T" + eventData.time),
+            minute_length: 90
+        });
+    if (error){
+        console.error("Failed to insert event: ", error.message);
+        return {
+            success: false,
+            message: "Failed to insert event"
+        }
+    }
+    return {
+        success: true,
+        message: "Event successfully scheduled"
+    }
+
 
 }
-async function uploadEvent(eventObj){
-    const {data, error} = await getConnection().from("users").eq("id", 111).select("id").single();
-    return {status: "success", event: eventObj};
+async function validateUsersAndReturnUserIds(interviewerEmail, userId){
+    console.log("Validating interviewer email: ", interviewerEmail);
+    const { data, error } = await (await getConnection())
+        .from("users")
+        .select("user_id, email")
+        .eq("email", interviewerEmail)
+        .maybeSingle();
+    if (!error && !data){
+        console.error("No user found with email: ", interviewerEmail);
+        return null;
+    }
+        if (error || !data){
+        console.error("Failed to validate interviewer email: ", error?.message || "Unknown error");
+        return null;
+    }
+
+    return {
+        interviewerId: data.user_id,
+        intervieweeId: userId
+    };
+
+}
+async function catchNewEventRequest(req, res){
+    let body = [];
+    let parsedBody = null;
+    req.on('data', chunk => { 
+        body.push(chunk);
+    });
+    req.on('end', async () => {
+        parsedBody = JSON.parse(Buffer.concat(body).toString());
+
+        let resp = await uploadEvent(parsedBody);
+        if (resp.success){
+            console.log("Event uploaded successfully");
+            res.status(200);
+        } else{
+            res.status(400);
+        }
+        res.send(resp);
+    });
 }
 
-export default {getEventsJsonForUser, uploadEvent};
+export default {getEventsJsonForUser, catchNewEventRequest, uploadEvent};

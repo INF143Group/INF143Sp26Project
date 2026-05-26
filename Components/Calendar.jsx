@@ -57,10 +57,10 @@ function submitAndHideDiv(dateObj){
         if (status.success===false){
             toast.error("Failed to schedule event.");
         } else {
-            calendarRef.current.getApi().addEvent({
-                title: "Interview with " + dateObj.interviewerName,
-                start: dateObj.date + " " + dateObj.time,
-            })
+            // calendarRef.current.getApi().addEvent({
+            //     title: "Interview with " + dateObj.interviewerName,
+            //     start: dateObj.date + " " + dateObj.time,
+            // })
             calendarRef.current.getApi().refetchEvents();
             toast.success(() => AddSubtext(dateObj), {
                 className: '!w-fit !max-w-none',

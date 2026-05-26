@@ -8,6 +8,8 @@ import EventAddPopup from "./EventAddPopup.jsx";
 
 import "../Styles/Calendar.css";
 
+const DEFAULT_ID="00000000-0000-0000-0000-000000000002";
+
 const ROOT = "http://localhost:8080/";  
 
 let calendarRef = null;
@@ -40,7 +42,7 @@ async function uploadEvent(dateObj){
     return respJson;
 }
 function getUserId(){
-    return 111;
+    return DEFAULT_ID;
 }
 function submitAndHideDiv(dateObj){
     if (! dateObj.success){
@@ -87,12 +89,12 @@ function isUserLoggedIn(){
 }
 
 async function getEvents(){
-    if (! isUserLoggedIn()){
+    if (! isUserLoggedIn()){ 
         console.error("failed user login");
         return [];
     }
 
-    const resp = await fetch(ROOT + "api/calendar?userId=111");
+    const resp = await fetch(ROOT + "api/calendar?userId="+getUserId());
     if (!resp.ok) {
         console.error("Failed to fetch events");
         return [];
@@ -103,19 +105,33 @@ async function getEvents(){
         return [];
     }
 
-    let returnEvents = [];
+    let responseEvents = respJson.events;
     let myStartTime = null;
     let myEndTime = null;
-    respJson.events.forEach((event) => {
-        myStartTime = new Date(event.date.day + " " + event.date.time);
-        myEndTime = new Date(myStartTime.getTime() + event.lengthMinutes*60000);
+    let returnEvents = [];
+    responseEvents.events_as_interviewer.forEach((event) => {
+        myStartTime = new Date(event.event_at);
+        myEndTime = new Date(myStartTime.getTime() + event.minute_length*60000);
 
         returnEvents.push({
-            id: event.id,
-            title: "Interview with " + event.interviewer.name,
+            id: event.event_id,
+            title: "Interview for: " + event.interviewee.display_name,
             start : myStartTime,
             end: myEndTime
         })
+    
+    });
+    responseEvents.events_as_interviewee.forEach((event) => {
+        myStartTime = new Date(event.event_at);
+        myEndTime = new Date(myStartTime.getTime() + event.minute_length*60000);
+
+        returnEvents.push({
+            id: event.event_id,
+            title: "Interview with: " + event.interviewer.display_name,
+            start : myStartTime,
+            end: myEndTime
+        })
+    
     });
     return returnEvents;
 }

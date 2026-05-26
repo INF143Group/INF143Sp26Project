@@ -1,9 +1,11 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import AnimatedButton from "./FancyButton.jsx";
 
-const CodeEditor = ({ value = '', onChange, overlayMode = false }) => {
-    const [activeLine, setActiveLine] = useState(1);
+const CodeEditor = ({ value = '', onChange, overlayMode = false, language = 'python', version = '3.10.0' }) => {
+    const [activeLine,    setActiveLine]    = useState(1);
     const [editorWidthCh, setEditorWidthCh] = useState(80);
+    const [output,        setOutput]        = useState('');
+    const [isRunning,     setIsRunning]     = useState(false);
     const textareaRef    = useRef(null);
     const lineNumbersRef = useRef(null);
     const renderLayerRef = useRef(null);
@@ -71,6 +73,31 @@ const CodeEditor = ({ value = '', onChange, overlayMode = false }) => {
             });
         }
     }, [onChange, updateActiveLine]);
+
+    const handleRunCode = async () => {
+        setIsRunning(true);
+        setOutput('Running...');
+        try {
+            const res = await fetch(`${import.meta.env.VITE_PISTON_URL}/api/v2/execute`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    language,
+                    version,
+                    files: [{ content: value }],
+                }),
+            });
+            if (!res.ok) throw new Error(`Server error: ${res.status}`);
+            const data = await res.json();
+            const out = data.run?.stdout || data.run?.output || '';
+            const err = data.run?.stderr || '';
+            setOutput(out + (err ? `\n--- stderr ---\n${err}` : '') || '(no output)');
+        } catch (err) {
+            setOutput(`Error: ${err.message}`);
+        } finally {
+            setIsRunning(false);
+        }
+    };
 
     // For each logical line, compute how many visual rows it occupies when wrapped
     const gutterSlots = useMemo(() => {
@@ -144,10 +171,13 @@ const CodeEditor = ({ value = '', onChange, overlayMode = false }) => {
             </div>
             <div className="button-wrapper">
                 <AnimatedButton
-                    text="Run Code"
-                    onClick={() => console.log("Run Code linked!")}
+                    text={isRunning ? "Running..." : "Run Code"}
+                    onClick={handleRunCode}
                 />
             </div>
+            {output && (
+                <pre className="ide-output">{output}</pre>
+            )}
         </>
     );
 };

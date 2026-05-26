@@ -17,8 +17,8 @@ app.use(cors());
 // )
 
 app.route("/api/calendar")
-    .get((req, res) => {
-        let events = calendar.getEventsJsonForUser(req.query.userId);
+    .get(async (req, res) => {
+        let events = await calendar.getEventsJsonForUser(req.query.userId);
         res.send(events);
     })
     .post((req, res) => {

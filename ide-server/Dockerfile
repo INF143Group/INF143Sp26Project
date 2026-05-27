@@ -11,7 +11,7 @@ RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /
     apt-get update && apt-get install -y curl npm
 
 # Cache bust
-ARG CACHE_BUST=6
+ARG CACHE_BUST=7
 
 # Start server, install packages, then stop
 RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \

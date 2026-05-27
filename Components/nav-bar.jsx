@@ -2,10 +2,9 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from 'react-router-dom';
-import homeLogo from './assets/home123.png';
 import profileIcon from './assets/profile12.png';
 import userIcon from './assets/user12.png';
-import NavDropdown from 'react-bootstrap/NavDropdown'; // ADD at top
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 const NavBar = () => {
     const navigate = useNavigate();
@@ -21,7 +20,7 @@ const NavBar = () => {
         <Navbar data-bs-theme="dark" style={{alignSelf: 'center'}}>
             <Container fluid>
                 <Navbar.Brand onClick={() => navigate("/")} style={{ cursor: 'pointer' }}>
-                    <img src={homeLogo} alt="home" style={{ width: '30px', height: '30px' }} />
+                    Home
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

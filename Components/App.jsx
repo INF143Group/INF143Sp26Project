@@ -4,6 +4,7 @@ import NavBar from "./nav-bar.jsx";
 import Footer from "./footer.jsx";
 import ProblemDisplay from './ProblemDisplay.jsx';
 import IdePanel from "./IDEPanel.jsx";
+import VideoPanel from "./video/VideoPanel.jsx";
 import ExpandablePanel from "./ExpandablePanel.jsx";
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
 
                 {/* Rows 2 to 9 - Main content areas */}
                 <div className="section-content div5" id="video-container">
-                    {/* video area */}
+                    <VideoPanel />
                 </div>
                 <div className="section-content div7" id="messages-container">
                     <div className="card">

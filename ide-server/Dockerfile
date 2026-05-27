@@ -60,7 +60,7 @@ RUN mkdir -p /usr/share/man/man1 && \
     apt-get install -y default-jdk || true
 
 # Cache bust
-ARG CACHE_BUST=17
+ARG CACHE_BUST=18
 
 # Start server, install packages, then stop
 RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
@@ -84,6 +84,7 @@ RUN cd / && npm install
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \
   "mkdir -p /piston/data/jobs /piston/data/isolate && \
+   cat /piston/packages/python/3.10.0/run && \
    PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
    sleep 3 && \
    node /proxy.js"]

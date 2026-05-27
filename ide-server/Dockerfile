@@ -6,7 +6,7 @@ RUN mkdir -p /piston/data/isolate
 
 # Replace isolate binary with one that manages box directories
 RUN mv /usr/local/bin/isolate /usr/local/bin/isolate.real || true && \
-    printf '#!/bin/sh\nBOX_ID=1\nBOX_DIR="/piston/data/isolate/${BOX_ID}"\ncase "$*" in\n  *--init*) mkdir -p "${BOX_DIR}/box" && echo "${BOX_DIR}" ;;\n  *--run*) shift; exec "$@" ;;\n  *--cleanup*) rm -rf "${BOX_DIR}" ;;\nesac\n' > /usr/local/bin/isolate && \
+    printf '#!/bin/sh\nBOX_ID=1\nBOX_DIR="/piston/data/isolate/${BOX_ID}"\ncase "$*" in\n  *--init*)\n    mkdir -p "${BOX_DIR}/box"\n    echo "cg=0" > "/tmp/${BOX_ID}-metadata.txt"\n    echo "${BOX_DIR}"\n    ;;\n  *--run*)\n    while [ "$1" != "--" ] && [ $# -gt 0 ]; do shift; done\n    [ "$1" = "--" ] && shift\n    exec "$@"\n    ;;\n  *--cleanup*)\n    rm -rf "${BOX_DIR}"\n    rm -f "/tmp/${BOX_ID}-metadata.txt"\n    ;;\nesac\n' > /usr/local/bin/isolate && \
     chmod +x /usr/local/bin/isolate
 
 # Fix Debian Buster EOL repos and install curl, npm, python3, gcc
@@ -23,7 +23,7 @@ RUN mkdir -p /usr/share/man/man1 && \
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 # Cache bust
-ARG CACHE_BUST=14
+ARG CACHE_BUST=15
 
 # Start server, install packages, then stop
 RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \

@@ -15,6 +15,11 @@ function VideoPanel() {
     const remoteVideoRef = useRef(null);
 
     useEffect(() => { 
+
+        const cleanup = initializeWebRTC({ localVideoElement: localVideoRef.current, remoteVideoElement: remoteVideoRef.current, roomId: "defaultRoom" });
+
+        return () => cleanup();
+
         socketRef.current = io.connect(getSignalingServerURL());
 
         const initializeMedia = async () => {
@@ -38,24 +43,7 @@ function VideoPanel() {
         return () => socketRef.current.disconnect();
     }, []);
 
-    const setupPeerConnection = (stream) => {
-        peerConnection.current = new RTCPeerConnection();
-        stream.getTracks().forEach(track => {
-            peerConnection.current.addTrack(track, stream);
-        });
-        peerConnection.current.onicecandidate = (event) => {
-            if (event.candidate) {
-                socketRef.current.emit('sendCandidate', event.candidate);
-            }
-        };
-
-        peerConnection.current.ontrack = (event) => {
-            setRemoteStream(event.streams[0]);
-            if (remoteVideoRef.current) {
-                remoteVideoRef.current.srcObject = event.streams[0];
-            }
-        };
-    };
+    
 
     return (
         <div>

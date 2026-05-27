@@ -2,10 +2,10 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from 'react-router-dom';
-import homeLogo from './assets/home123.png';
+import homeLogo from './assets/phoenix.png';
 import profileIcon from './assets/profile12.png';
 import userIcon from './assets/user12.png';
-import NavDropdown from 'react-bootstrap/NavDropdown'; // ADD at top
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 const NavBar = () => {
     const navigate = useNavigate();
@@ -21,7 +21,7 @@ const NavBar = () => {
         <Navbar data-bs-theme="dark" style={{alignSelf: 'center'}}>
             <Container fluid>
                 <Navbar.Brand onClick={() => navigate("/")} style={{ cursor: 'pointer' }}>
-                    <img src={homeLogo} alt="home" style={{ width: '30px', height: '30px' }} />
+                    <img src={homeLogo} alt = "home" style = {{width: '42px', height: '38px', color:'clear'}} />
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -41,7 +41,7 @@ const NavBar = () => {
                     <Nav className="ms-3">
                        {isLoggedIn ? (
                                 <NavDropdown 
-                                    title={<img src={userIcon} alt="user" style={{ width: '25px', height: '25px' }} />}
+                                    title={<img src={userIcon} alt="user" style={{ width: '25px', height: '25px' }}/>}
                                     id="user-dropdown"
                                     align="end"
                                 >
@@ -51,10 +51,9 @@ const NavBar = () => {
                                 </NavDropdown>
                             ) : (
                                 <Nav.Link onClick={() => navigate('/login')} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    <img src={profileIcon} alt="profile" style={{ width: '25px', height: '25px' }} />
+                                    <img src={profileIcon} alt="profile" style={{ width: '25px', height: '25px' }}/>
                                 </Nav.Link>
                             )}
-                                                
                               </Nav>
                 </Navbar.Collapse>
             </Container>

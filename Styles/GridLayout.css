@@ -44,7 +44,7 @@ body {
 }
 
 .nav-link {
-    color: #544141 !important;
+    color: black !important;
     padding: 0 8px !important;
     user-select: none;
     transition: color 0.2s ease, text-shadow 0.2s ease;
@@ -93,12 +93,12 @@ body {
 }
 
 /* --- Grid Areas --- */
-.div1 { grid-area: 1 / 1 / 2 / 4; background-color: #ffffff; align-items: center; margin: 0 -8px; }
+.div1 { grid-area: 1 / 1 / 2 / 4; background-color: #A79A8A; align-items: center; margin: 0 -8px; }
 .div2 { grid-area: 2 / 1 / 3 / 2; }
 .div5 { grid-area: 2 / 1 / 6 / 2; }
 .div6 { grid-area: 6 / 1 / 7 / 2; align-self: start; z-index: 3; }
 .div7 { grid-area: 6 / 1 / 10 / 2; display: flex; flex-direction: column; padding: 0; overflow: hidden; }
-.div10 { grid-area: 10 / 1 / 11 / 4; background-color:#ffffff; margin: 0 -8px; }
+.div10 { grid-area: 10 / 1 / 11 / 4; background-color:#A79A8A; margin: 0 -8px; }
 
 /* Expandable panel wrappers */
 .expandable-problem {

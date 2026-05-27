@@ -10,7 +10,7 @@ import Help from './Help.tsx'
 import Home from './Home.jsx'
 import Team from './Team.jsx'
 import About from './About.jsx'
-import Chat from './Chat.tsx'
+import Chat from './chat.tsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

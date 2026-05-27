@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase.js";
-import "./Chat.css";
+import "./chat.css";
 import sendIcon from "./assets/send.png";
 import addIcon from "./assets/add.png";
 import NavBar from "./nav-bar.jsx";

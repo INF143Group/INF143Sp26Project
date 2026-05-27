@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import {ToastContainer, toast} from "react-toastify";
-import NavBar from "../Components/nav-bar.jsx";
+import NavBar from "./nav-bar.jsx";
 import  FullCalendar  from "@fullcalendar/react";
 import  dayGridPlugin  from "@fullcalendar/daygrid";
 import  interactionPlugin   from "@fullcalendar/interaction";

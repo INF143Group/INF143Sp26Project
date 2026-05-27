@@ -21,9 +21,13 @@ case "$*" in\n\
   *--run*)\n\
     while [ "$1" != "--" ] && [ $# -gt 0 ]; do shift; done\n\
     [ "$1" = "--" ] && shift\n\
-    FILE=$(find /piston/data/jobs -name "file0.code" 2>/dev/null | head -1)\n\
-    DIR=$(dirname "$FILE")\n\
-    (cd "$DIR" && "$@")\n\
+    CODEFILE=$(find /piston/data/jobs -name "*.code" -newer /tmp 2>/dev/null | head -1)\n\
+    JOBDIR=$(dirname "$CODEFILE")\n\
+    if [ -n "$JOBDIR" ] && [ "$JOBDIR" != "." ]; then\n\
+      (cd "$JOBDIR" && "$@")\n\
+    else\n\
+      "$@"\n\
+    fi\n\
     EXIT=$?\n\
     printf "exitcode:%d\\ntime:0.000\\ntime-wall:0.000\\nmax-rss:0\\ncsw-voluntary:0\\ncsw-forced:0\\n" $EXIT > "${META}"\n\
     exit $EXIT\n\
@@ -75,7 +79,7 @@ COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install
 
-ARG CACHE_BUST=24
+ARG CACHE_BUST=25
 
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \

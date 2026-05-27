@@ -59,9 +59,6 @@ RUN apt-get install -y wget build-essential libssl-dev zlib1g-dev \
 RUN mkdir -p /usr/share/man/man1 && \
     apt-get install -y default-jdk || true
 
-# Cache bust
-ARG CACHE_BUST=19
-
 # Start server, install packages, then stop
 RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
     sleep 8 && \
@@ -80,6 +77,9 @@ RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
 COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install
+
+# Cache bust — only invalidates layers below, never Python/Java compilation above
+ARG CACHE_BUST=20
 
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \

@@ -11,10 +11,10 @@ RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /
     apt-get update && apt-get install -y curl npm
 
 # Cache bust
-ARG CACHE_BUST=7
+ARG CACHE_BUST=8
 
 # Start server, install packages, then stop
-RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
+RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 PISTON_DISABLE_ISOLATE=true node /piston_api/src/index.js & \
     sleep 8 && \
     curl -s -X POST http://localhost:2000/api/v2/packages \
       -H "Content-Type: application/json" \
@@ -27,6 +27,7 @@ RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
       -d '{"language":"gcc","version":"10.2.0","platform":"baremetal-debian"}' && \
     sleep 120 && \
     kill %1 || true
+
 COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install
@@ -34,6 +35,6 @@ RUN cd / && npm install
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \
   "mkdir -p /piston/data/jobs && \
-   PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
+   PISTON_BIND_ADDRESS=0.0.0.0:2000 PISTON_DISABLE_ISOLATE=true node /piston_api/src/index.js & \
    sleep 3 && \
    node /proxy.js"]

@@ -22,7 +22,7 @@ case "$*" in\n\
   *--run*)\n\
     while [ "$1" != "--" ] && [ $# -gt 0 ]; do shift; done\n\
     [ "$1" = "--" ] && shift\n\
-    "$@"\n\
+    cd /piston_api && "$@"\n\
     EXIT=$?\n\
     printf "exitcode:%d\\ntime:0.000\\ntime-wall:0.000\\nmax-rss:0\\ncsw-voluntary:0\\ncsw-forced:0\\n" $EXIT > "${META}"\n\
     exit $EXIT\n\
@@ -78,8 +78,8 @@ COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install
 
-# Cache bust — only invalidates layers below, never Python/Java compilation above
-ARG CACHE_BUST=20
+# Cache bust — only invalidates CMD below, never heavy layers above
+ARG CACHE_BUST=21
 
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \

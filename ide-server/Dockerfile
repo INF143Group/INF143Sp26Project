@@ -16,12 +16,17 @@ ARG CACHE_BUST=6
 # Start server, install packages, then stop
 RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
     sleep 8 && \
-    curl -s -X POST http://localhost:2000/api/v2/packages -H "Content-Type: application/json" -d '{"language":"python","version":"3.10.0"}' && \
-    curl -s -X POST http://localhost:2000/api/v2/packages -H "Content-Type: application/json" -d '{"language":"java","version":"15.0.2"}' && \
-    curl -s -X POST http://localhost:2000/api/v2/packages -H "Content-Type: application/json" -d '{"language":"gcc","version":"10.2.0"}' && \
+    curl -s -X POST http://localhost:2000/api/v2/packages \
+      -H "Content-Type: application/json" \
+      -d '{"language":"python","version":"3.10.0","platform":"baremetal-debian"}' && \
+    curl -s -X POST http://localhost:2000/api/v2/packages \
+      -H "Content-Type: application/json" \
+      -d '{"language":"java","version":"15.0.2","platform":"baremetal-debian"}' && \
+    curl -s -X POST http://localhost:2000/api/v2/packages \
+      -H "Content-Type: application/json" \
+      -d '{"language":"gcc","version":"10.2.0","platform":"baremetal-debian"}' && \
     sleep 120 && \
     kill %1 || true
-
 COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install

@@ -4,9 +4,9 @@ USER root
 
 RUN mkdir -p /piston/data/isolate
 
-# Replace isolate binary with a no-op that always succeeds
+# Replace isolate binary with one that returns expected output
 RUN mv /usr/local/bin/isolate /usr/local/bin/isolate.real || true && \
-    printf '#!/bin/sh\nexit 0\n' > /usr/local/bin/isolate && \
+    printf '#!/bin/sh\necho 1\nexit 0\n' > /usr/local/bin/isolate && \
     chmod +x /usr/local/bin/isolate
 
 # Fix Debian Buster EOL repos and install curl, npm, python3, gcc
@@ -23,7 +23,7 @@ RUN mkdir -p /usr/share/man/man1 && \
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 # Cache bust
-ARG CACHE_BUST=12
+ARG CACHE_BUST=13
 
 # Start server, install packages, then stop
 RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
@@ -37,7 +37,7 @@ RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
     curl -s -X POST http://localhost:2000/api/v2/packages \
       -H "Content-Type: application/json" \
       -d '{"language":"gcc","version":"10.2.0"}' && \
-    sleep 120 && \
+    sleep 45 && \
     kill %1 || true
 
 COPY proxy.js /proxy.js

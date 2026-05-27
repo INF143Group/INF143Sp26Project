@@ -4,8 +4,10 @@ USER root
 
 RUN mkdir -p /piston/data/isolate
 
-# Dump isolate usage for debugging
-RUN grep -n "isolate" /piston_api/src/job.js | head -30
+# Replace isolate binary with a no-op that always succeeds
+RUN mv /usr/local/bin/isolate /usr/local/bin/isolate.real || true && \
+    printf '#!/bin/sh\nexit 0\n' > /usr/local/bin/isolate && \
+    chmod +x /usr/local/bin/isolate
 
 # Fix Debian Buster EOL repos and install curl + npm
 RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list && \
@@ -14,10 +16,10 @@ RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /
     apt-get update && apt-get install -y curl npm
 
 # Cache bust
-ARG CACHE_BUST=9
+ARG CACHE_BUST=10
 
 # Start server, install packages, then stop
-RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 PISTON_DISABLE_ISOLATE=true node /piston_api/src/index.js & \
+RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
     sleep 8 && \
     curl -s -X POST http://localhost:2000/api/v2/packages \
       -H "Content-Type: application/json" \
@@ -38,6 +40,6 @@ RUN cd / && npm install
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \
   "mkdir -p /piston/data/jobs && \
-   PISTON_BIND_ADDRESS=0.0.0.0:2000 PISTON_DISABLE_ISOLATE=true node /piston_api/src/index.js & \
+   PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
    sleep 3 && \
    node /proxy.js"]

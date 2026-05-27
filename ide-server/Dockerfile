@@ -21,11 +21,8 @@ case "$*" in\n\
   *--run*)\n\
     while [ "$1" != "--" ] && [ $# -gt 0 ]; do shift; done\n\
     [ "$1" = "--" ] && shift\n\
-    echo "DEBUG ARGS: $@" >> /tmp/isolate-debug.log\n\
-    echo "DEBUG PWD: $(pwd)" >> /tmp/isolate-debug.log\n\
-    "$@" 2>> /tmp/isolate-debug.log\n\
+    (cd /piston_api && "$@")\n\
     EXIT=$?\n\
-    cat /tmp/isolate-debug.log >&2\n\
     printf "exitcode:%d\\ntime:0.000\\ntime-wall:0.000\\nmax-rss:0\\ncsw-voluntary:0\\ncsw-forced:0\\n" $EXIT > "${META}"\n\
     exit $EXIT\n\
     ;;\n\
@@ -76,7 +73,7 @@ COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install
 
-ARG CACHE_BUST=22
+ARG CACHE_BUST=23
 
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \

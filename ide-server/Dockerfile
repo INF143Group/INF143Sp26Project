@@ -4,6 +4,9 @@ USER root
 
 RUN mkdir -p /piston/data/isolate
 
+# Dump isolate usage for debugging
+RUN grep -n "isolate" /piston_api/src/job.js | head -30
+
 # Fix Debian Buster EOL repos and install curl + npm
 RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list && \
     sed -i 's|http://security.debian.org/debian-security|http://archive.debian.org/debian-security|g' /etc/apt/sources.list && \
@@ -11,7 +14,7 @@ RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /
     apt-get update && apt-get install -y curl npm
 
 # Cache bust
-ARG CACHE_BUST=8
+ARG CACHE_BUST=9
 
 # Start server, install packages, then stop
 RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 PISTON_DISABLE_ISOLATE=true node /piston_api/src/index.js & \

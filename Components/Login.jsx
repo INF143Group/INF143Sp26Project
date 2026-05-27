@@ -10,19 +10,21 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+const handleLogin = async () => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
 
-    if (error) {
-      alert("Login failed: " + error.message);
-    } else {
-      alert("Login successful!");
-      navigate("/");
-    }
-  };
+  if (error) {
+    alert("Login failed: " + error.message);
+  } else {
+    // Save user ID to sessionStorage for other components to use
+    sessionStorage.setItem('user_id', data.user.id);
+    alert("Login successful!");
+    navigate("/");
+  }
+};
 
   return (
     // LOGIN SECTION - Partha

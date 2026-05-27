@@ -10,6 +10,7 @@ import Help from './Help.tsx'
 import Home from './Home.jsx'
 import Team from './Team.jsx'
 import About from './About.jsx'
+import Chat from './Chat.tsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/home" element={<Home />} />
         <Route path="/team" element={<Team />} />
         <Route path="/about" element={<About />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

@@ -21,7 +21,7 @@ const NavBar = () => {
         <Navbar data-bs-theme="dark" style={{alignSelf: 'center'}}>
             <Container fluid>
                 <Navbar.Brand onClick={() => navigate("/")} style={{ cursor: 'pointer' }}>
-                    <img src={homeLogo} alt = "home" style = {{width: '42px', height: '38px', color:'clear'}} />
+                    <img src={homeLogo} alt = "home" style = {{width: '42px', height: '38px'}} />
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

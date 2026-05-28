@@ -19,15 +19,15 @@ function App() {
                 <div className="section-tags div2" id="video-top">
                     <p>Interview</p>
                 </div>
-                <div className="section-tags div6" id="messages-header">
+                <div className="section-tags div4" id="messages-header">
                     <p>Chat</p>
                 </div>
 
                 {/* Rows 2 to 9 - Main content areas */}
-                <div className="section-content div5" id="video-container">
+                <div className="section-content div3" id="video-container">
                     {/* video area */}
                 </div>
-                <div className="section-content div7" id="messages-container">
+                <div className="section-content div5" id="messages-container">
                     <div className="card">
                         <div className="chat-window">
                             <ul className="message-list"></ul>
@@ -52,7 +52,7 @@ function App() {
                 </div>
 
                 {/* row 10 - Bottom Nav/Footer */}
-                <div className="div10" id="bottom-nav-bar">
+                <div className="div6" id="bottom-nav-bar" >
                     <Footer/>
                 </div>
             </div>

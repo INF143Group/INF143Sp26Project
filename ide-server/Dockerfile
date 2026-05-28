@@ -21,6 +21,8 @@ case "$*" in\n\
   *--run*)\n\
     while [ "$1" != "--" ] && [ $# -gt 0 ]; do shift; done\n\
     [ "$1" = "--" ] && shift\n\
+    PKGDIR=$(echo "$@" | grep -oE "/piston/packages/[^/]+/[^/]+" | head -1)\n\
+    export PATH="${PKGDIR}:${PATH}"\n\
     (cd "${BOX_DIR}/box/submission" && "$@")\n\
     EXIT=$?\n\
     printf "exitcode:%d\\ntime:0.000\\ntime-wall:0.000\\nmax-rss:0\\ncsw-voluntary:0\\ncsw-forced:0\\n" $EXIT > "${META}"\n\
@@ -35,7 +37,7 @@ case "$*" in\n\
 RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list && \
     sed -i 's|http://security.debian.org/debian-security|http://archive.debian.org/debian-security|g' /etc/apt/sources.list && \
     sed -i '/buster-updates/d' /etc/apt/sources.list && \
-    apt-get update && apt-get install -y curl npm gcc
+    apt-get update && apt-get install -y curl npm gcc rename
 
 RUN apt-get install -y wget build-essential libssl-dev zlib1g-dev \
     libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev \
@@ -73,7 +75,7 @@ COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install
 
-ARG CACHE_BUST=27
+ARG CACHE_BUST=28
 
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \

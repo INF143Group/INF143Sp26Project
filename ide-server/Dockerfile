@@ -14,16 +14,14 @@ BOX_DIR="/piston/data/isolate/${BOX_ID}"\n\
 META="/tmp/${BOX_ID}-metadata.txt"\n\
 case "$*" in\n\
   *--init*)\n\
-    mkdir -p "${BOX_DIR}/box"\n\
+    mkdir -p "${BOX_DIR}/box/submission"\n\
     printf "exitcode:0\\ntime:0.000\\ntime-wall:0.000\\nmax-rss:0\\ncsw-voluntary:0\\ncsw-forced:0\\n" > "${META}"\n\
     echo "${BOX_DIR}"\n\
     ;;\n\
   *--run*)\n\
     while [ "$1" != "--" ] && [ $# -gt 0 ]; do shift; done\n\
     [ "$1" = "--" ] && shift\n\
-    FILE=$(find /piston/data/jobs -name "file0.code" 2>/dev/null | head -1)\n\
-    DIR=$(dirname "$FILE")\n\
-    (cd "$DIR" && "$@")\n\
+    (cd "${BOX_DIR}/box/submission" && "$@")\n\
     EXIT=$?\n\
     printf "exitcode:%d\\ntime:0.000\\ntime-wall:0.000\\nmax-rss:0\\ncsw-voluntary:0\\ncsw-forced:0\\n" $EXIT > "${META}"\n\
     exit $EXIT\n\
@@ -75,7 +73,7 @@ COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install
 
-ARG CACHE_BUST=24
+ARG CACHE_BUST=26
 
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \

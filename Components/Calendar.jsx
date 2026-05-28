@@ -42,7 +42,7 @@ async function uploadEvent(dateObj){
     return respJson;
 }
 function getUserId(){
-    return DEFAULT_ID;
+    return sessionStorage.getItem('user_id') || DEFAULT_ID;
 }
 function submitAndHideDiv(dateObj){
     if (! dateObj.success){

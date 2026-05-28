@@ -2,9 +2,9 @@ import { useState } from 'react';
 import CodeEditor from "./CodeEditor.jsx";
 
 const LANGUAGES = [
-    { label: 'Python',  language: 'python', version: '3.10.0' },
-    { label: 'Java',    language: 'java',   version: '15.0.2' },
-    { label: 'C (GCC)', language: 'gcc',    version: '10.2.0' },
+    { label: 'Python',   language: 'python', version: '3.10.0' },
+    { label: 'Java',     language: 'java',   version: '15.0.2' },
+    { label: 'C++ (GCC)', language: 'c++',   version: '10.2.0' },
 ];
 const IdePanel = () => {
     const [expanded, setExpanded] = useState(false);

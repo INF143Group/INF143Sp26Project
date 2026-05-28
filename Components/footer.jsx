@@ -13,9 +13,9 @@ const Footer = () => (
         <Container fluid className="flex-column justify-content-center align-items-center py-1 footer-container">
             <span className="footer-copyright">© 2026 - Company, Inc. All rights reserved. UCI</span>
             <Nav className="justify-content-center footer-nav">
-                <NavLink href="#home">Home</NavLink>
-                <NavLink href="#resources">Resources</NavLink>
-                <NavLink href="#about">About</NavLink>
+                <NavLink href="/home">Home</NavLink>
+                <NavLink href="/resources">Resources</NavLink>
+                <NavLink href="/about">About</NavLink>
             </Nav>
         </Container>
     </Navbar>

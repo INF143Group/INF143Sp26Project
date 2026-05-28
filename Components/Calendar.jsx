@@ -85,12 +85,12 @@ function AddSubtext(dateObj){
     )
 }
 function isUserLoggedIn(){
-    return true;
+    return !!sessionStorage.getItem('user_id');
 }
 
 async function getEvents(){
     if (! isUserLoggedIn()){ 
-        console.error("failed user login");
+        console.error("No user is logged in");
         return [];
     }
 

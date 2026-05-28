@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase.js";
 import "./chat.css";
-import sendIcon from "./assets/send.png";
+import sendIcon from './assets/send.png';
 import addIcon from "./assets/add.png";
 import NavBar from "./nav-bar.jsx";
+import Footer from "./footer.jsx";
 
 const mockUsers = [
   { id: 1, name: "Elena Vance", role: "Product Designer", status: "online", initials: "EV", color: "#5b8ef0" },
@@ -80,7 +81,9 @@ function Chat() {
 
   return (
     <>
-      <NavBar />
+      <div className = {"div1"} id = {"nav-bar"}>
+        <NavBar/>
+      </div>
       <div className="chat-wrapper">
         <div className="chat-sidebar">
           <div className="chat-sidebar-header">
@@ -205,6 +208,9 @@ function Chat() {
             </button>
           </div>
         </div>
+      </div>
+      <div className="div6" id="bottom-nav-bar" >
+        <Footer/>
       </div>
     </>
   );

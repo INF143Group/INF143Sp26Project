@@ -19,10 +19,11 @@ case "$*" in\n\
     echo "${BOX_DIR}"\n\
     ;;\n\
   *--run*)\n\
-    while [ "$1" != "--" ] && [ $# -gt 0 ]; do shift; done\n\
+    while [ "$1" != "--" ] && [ $# -gt 0 ]; do\n\
+      case "$1" in -E) shift; export "$1" ;; esac\n\
+      shift\n\
+    done\n\
     [ "$1" = "--" ] && shift\n\
-    PKGDIR=$(echo "$@" | grep -oE "/piston/packages/[^/]+/[^/]+" | head -1)\n\
-    export PATH="${PKGDIR}:${PATH}"\n\
     (cd "${BOX_DIR}/box/submission" && "$@")\n\
     EXIT=$?\n\
     printf "exitcode:%d\\ntime:0.000\\ntime-wall:0.000\\nmax-rss:0\\ncsw-voluntary:0\\ncsw-forced:0\\n" $EXIT > "${META}"\n\
@@ -75,7 +76,7 @@ COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install
 
-ARG CACHE_BUST=28
+ARG CACHE_BUST=29
 
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \

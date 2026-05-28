@@ -14,7 +14,7 @@ BOX_DIR="/piston/data/isolate/${BOX_ID}"\n\
 META="/tmp/${BOX_ID}-metadata.txt"\n\
 case "$*" in\n\
   *--init*)\n\
-    mkdir -p "${BOX_DIR}/box/submission"\n\
+    mkdir -p "${BOX_DIR}/box"\n\
     printf "exitcode:0\\ntime:0.000\\ntime-wall:0.000\\nmax-rss:0\\ncsw-voluntary:0\\ncsw-forced:0\\n" > "${META}"\n\
     echo "${BOX_DIR}"\n\
     ;;\n\
@@ -73,7 +73,7 @@ COPY proxy.js /proxy.js
 COPY package.json /package.json
 RUN cd / && npm install
 
-ARG CACHE_BUST=26
+ARG CACHE_BUST=27
 
 ENTRYPOINT []
 CMD ["/bin/sh", "-c", \

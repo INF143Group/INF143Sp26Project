@@ -1,19 +1,44 @@
-body{
-    --bg: aqua;
+*,
+*::before,
+*::after {
+    box-sizing: border-box; /* padding is included in width, fixes overflow */
+}
+
+.calendar-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden; /* prevent horizontal scroll */
+}
+
+.calendar-heading {
+    padding-top: 10px;
+    padding-left: 10px;
+    background: #f0ebe3;
+    width: 100%;
 }
 
 .stack {
     position: relative;
-    width: 100vw;  /* Or whatever size you need */
-    height: 100vh;  /* Or whatever size you need */
+    width: 100%;
+    flex: 1;           /* grows to fill remaining space between heading and footer */
+    min-height: 0;     /* allows flex child to shrink properly */
     margin: 0 auto;
+    background: #f0ebe3;
+
 }
+
 .stack > * {
     position: absolute;
-    padding:50px;
+    padding: 0 30px 20px;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
 }
-.top-layer    { z-index: 7; pointer-events: none}
+
+.top-layer {
+    z-index: 7;
+    pointer-events: none;
+}

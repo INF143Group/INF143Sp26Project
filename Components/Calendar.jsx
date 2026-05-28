@@ -1,12 +1,13 @@
 import { useRef, useState } from "react";
 import {ToastContainer, toast} from "react-toastify";
 import NavBar from "./nav-bar.jsx";
+import EventAddPopup from "./EventAddPopup.jsx";
 import  FullCalendar  from "@fullcalendar/react";
 import  dayGridPlugin  from "@fullcalendar/daygrid";
 import  interactionPlugin   from "@fullcalendar/interaction";
-import EventAddPopup from "./EventAddPopup.jsx";
 
 import "../Styles/Calendar.css";
+import Footer from "./footer.jsx";
 
 const DEFAULT_ID="00000000-0000-0000-0000-000000000002";
 
@@ -162,10 +163,10 @@ export default function Calendar(){
                 <NavBar/>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js"></script>
-            <h1>Calendar</h1>
-            <ToastContainer
-                toastStyle={{width: "fit-content", maxWidth: "none"}}
-            />
+            <div className={"calendar-heading"} id={"calendar-heading"}>
+                <h1>Calendar</h1>
+            </div>
+            <ToastContainer/>
             <div className="stack">
                 <FullCalendar
                     ref={calendarRef}
@@ -195,8 +196,10 @@ export default function Calendar(){
                     />
                 </div>
             </div>
+            <div className="div6" id="bottom-nav-bar" >
+                <Footer/>
+            </div>
         </div>
-        
     );
 }
 

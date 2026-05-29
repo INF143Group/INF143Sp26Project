@@ -26,7 +26,7 @@ function App() {
 
                 {/* Rows 2 to 9 - Main content areas */}
                 <div className="section-content div3" id="video-container">
-                    {/* video area */}
+                    <VideoPanel />
                 </div>
                 <div className="section-content div5" id="messages-container">
                     <div className="card">

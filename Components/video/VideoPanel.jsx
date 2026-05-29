@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import '../../Styles/VideoPanel.css';
 import Peer from 'peerjs';
 
 function getSignalingServerURL() {
@@ -6,6 +7,10 @@ function getSignalingServerURL() {
 }
 
 function VideoPanel() {
+    const userId = sessionStorage.getItem("user_id");
+    if (userId===null){
+        return <div id="video-error">Error: No user ID found in session storage. Please log in.</div>;
+    }
     const [peerId, setPeerId] = useState('');
     const [remotePeerIdValue, setRemotePeerIdValue] = useState('');
     const mediaStream = useRef(null);
@@ -16,7 +21,7 @@ function VideoPanel() {
     
     
     useEffect(() => { 
-        const peer = new Peer(undefined, {
+        const peer = new Peer(userId, {
             host: 'localhost',
             port: 8080,
             path: '/peer'

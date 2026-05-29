@@ -27,10 +27,10 @@ let dummyEvents = [
 ]
 async function getEventsJsonForUser(userId){
     if (!userId)
-        return {
-            success: false,
-            message: "no user ID"
-        }
+    return {
+        success: false,
+        message: "no user ID"
+    }
 
     const { data: eventsData, error } = await (await getConnection())
     .from("events")
@@ -45,6 +45,16 @@ async function getEventsJsonForUser(userId){
         return {
             success: false,
             message: error
+        }
+    }
+
+    if (eventsData.length === 0){
+        return {
+            success: true,
+            events: {
+                events_as_interviewer: [],
+                events_as_interviewee: []
+            }
         }
     }
 

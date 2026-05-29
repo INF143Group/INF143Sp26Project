@@ -7,7 +7,7 @@ function About() {
             <div className={"div1"} id={"nav-bar"}>
                 <NavBar/>
             </div>
-            <div style={{flex: 1, overflowY: 'auto'}}>
+            <div style={{flex: 1, overflowY: 'auto', backgroundColor: '#f0ebe3'}}>
                 <div className="container mt-5 mb-5">
                     <h1 className="text-center mb-5">
                         About PivotStack

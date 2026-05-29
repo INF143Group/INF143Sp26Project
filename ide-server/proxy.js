@@ -1,4 +1,3 @@
-// ide-server/proxy.js
 import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
@@ -15,6 +14,9 @@ app.use((req, res, next) => {
 app.use('/api', createProxyMiddleware({
     target: 'http://localhost:2000',
     changeOrigin: true,
+    proxyTimeout: 10000,
+    timeout: 10000,
 }));
 
-app.listen(process.env.PORT || 3000, () => console.log(`Proxy running on port ${process.env.PORT || 3000}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Proxy running on port ${PORT}`));

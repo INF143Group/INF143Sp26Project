@@ -42,7 +42,7 @@ async function uploadEvent(dateObj){
     return respJson;
 }
 function getUserId(){
-    return DEFAULT_ID;
+    return sessionStorage.getItem('user_id') || DEFAULT_ID;
 }
 function submitAndHideDiv(dateObj){
     if (! dateObj.success){
@@ -85,12 +85,12 @@ function AddSubtext(dateObj){
     )
 }
 function isUserLoggedIn(){
-    return true;
+    return !!sessionStorage.getItem('user_id');
 }
 
 async function getEvents(){
     if (! isUserLoggedIn()){ 
-        console.error("failed user login");
+        console.error("No user is logged in");
         return [];
     }
 

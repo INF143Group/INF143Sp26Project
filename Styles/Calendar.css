@@ -1,14 +1,14 @@
 *,
 *::before,
 *::after {
-    box-sizing: border-box; /* padding is included in width, fixes overflow */
+    box-sizing: border-box;
 }
 
 .calendar-wrapper {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    overflow-x: hidden; /* prevent horizontal scroll */
+    overflow-x: hidden;
 }
 
 .calendar-heading {
@@ -21,11 +21,10 @@
 .stack {
     position: relative;
     width: 100%;
-    flex: 1;           /* grows to fill remaining space between heading and footer */
-    min-height: 0;     /* allows flex child to shrink properly */
+    flex: 1;
+    min-height: 0;
     margin: 0 auto;
     background: #f0ebe3;
-
 }
 
 .stack > * {
@@ -41,4 +40,28 @@
 .top-layer {
     z-index: 7;
     pointer-events: none;
+}
+
+.fc-daygrid-day-number {
+    color: black !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: black !important;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-scrollgrid {
+    border-color: black !important;
+}
+
+.fc-col-header-cell-cushion {
+    text-decoration: none !important;
+}
+
+.fc-daygrid-day-number:hover {
+    cursor: pointer !important;
+    color: #c12f2f !important;
+    text-shadow: 0 0 8px rgba(237, 169, 169, 0.8);
 }

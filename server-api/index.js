@@ -1,9 +1,9 @@
 import { createRequire } from 'module';
 import { createClient } from '@supabase/supabase-js'
-import { Server } from 'socket.io';
 import 'dotenv/config'
 import calendar from './apis/calendar/calendar.js';
 import { initializeSignaling } from './apis/video/signaling-server.js';
+import { ExpressPeerServer } from 'peer';
 
 
 const require = createRequire(import.meta.url);
@@ -21,11 +21,17 @@ app.route("/api/calendar")
         calendar.catchNewEventRequest(req, res);
     });
 
-const http = require('http');
-const server = http.createServer(app);
-const io = new Server(server);
-initializeSignaling(io);
-
-server.listen(8080, (req, res) => {
+const server = app.listen(8080, () => {
     console.log("Server is running on port 8080");
 });
+
+const http = require('http');
+const peerServer = ExpressPeerServer(server, {
+    path: '/peer'
+});
+
+app.use("/peer", peerServer);
+
+peerServer.on("connection", (client) => {
+    console.log("Peer connected: " + client.getId());
+})

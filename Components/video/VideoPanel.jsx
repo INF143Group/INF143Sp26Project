@@ -1,53 +1,73 @@
 import React, { useState, useEffect, useRef } from 'react';
-import io from 'socket.io-client';
+import Peer from 'peerjs';
 
 function getSignalingServerURL() {
-    return "/"
+    return "http://localhost:8080/"
 }
 
 function VideoPanel() {
-    
-    const [localStream, setLocalStream] = useState(null);
-    const [remoteStream, setRemoteStream] = useState(null);
-    const socketRef = useRef();
-    const peerConnection = useRef(null);
-    const localVideoRef = useRef(null);
+    const [peerId, setPeerId] = useState('');
+    const [remotePeerIdValue, setRemotePeerIdValue] = useState('');
     const remoteVideoRef = useRef(null);
+    const currentUserVideoRef = useRef(null);
+    const peerInstance = useRef(null);
 
+    
+    
     useEffect(() => { 
+        const peer = new Peer();
 
-        const cleanup = initializeWebRTC({ localVideoElement: localVideoRef.current, remoteVideoElement: remoteVideoRef.current, roomId: "defaultRoom" });
+    peer.on('open', (id) => {
+        setPeerId(id);
+    });
+    peer.on('call', (call) => {
+        var getUserMedia = navigator.getUserMedia 
+      || navigator.webkitGetUserMedia 
+     || navigator.mozGetUserMedia;
 
-        return () => cleanup();
-
-        socketRef.current = io.connect(getSignalingServerURL());
-
-        const initializeMedia = async () => {
-            try {
-                const stream  = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
-                setLocalStream(stream);
-                if (localVideoRef.current) {
-                    localVideoRef.current.srcObject = stream;
-                }
-                setupPeerConnection(stream);
-            } catch (error) {
-                console.error('Failed to get media devices:', error);
-            }
-        };
-
-        initializeMedia();
-
-        socketRef.current.on('receiveCandidate', candidate => {
-            peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+     getUserMedia({video: true, audio: true}, (mediaStream) => {
+        currentUserVideoRef.current.srcObject = mediaStream;
+        currentUserVideoRef.current.play();
+        call.answer(mediaStream);
+        call.on('stream', function (remoteStream) {
+            remoteVideoRef.current.srcObject = remoteStream;
+            remoteVideoRef.current.play();
         });
-        return () => socketRef.current.disconnect();
+     });
+    });
+    peer.on('error', console.error);
+    peerInstance.current = peer;
+
+    
+    
+
     }, []);
 
-    
+    const call = (remotePeerId) => {
+        var getUserMedia = navigator.getUserMedia 
+        || navigator.webkitGetUserMedia 
+        || navigator.mozGetUserMedia;
+
+        getUserMedia({ video: true, audio: true }, (mediaStream) => {
+            currentUserVideoRef.current.srcObject = mediaStream;
+            currentUserVideoRef.current.play();
+
+            const call = peerInstance.current.call(remotePeerId, mediaStream);
+
+            call.on('stream', (remoteStream) => {
+                remoteVideoRef.current.srcObject = remoteStream;
+                remoteVideoRef.current.play();
+            });
+            call.on('error', console.error);
+        });
+    }
 
     return (
         <div>
-            <video ref={localVideoRef} autoPlay muted playsInline className="localVideo" style={{width: '45%', marginRight: '10px'}} />
+            <h1>Current user id is {peerId}</h1>
+            <input type="text" value={remotePeerIdValue} onChange={e => setRemotePeerIdValue(e.target.value)} />
+            <button onClick={() => call(remotePeerIdValue)}>Call</button>
+            <video ref={currentUserVideoRef} autoPlay muted playsInline className="localVideo" style={{width: '45%', marginRight: '10px'}} />
             <video ref={remoteVideoRef} autoPlay playsInline className="remoteVideo" style={{width: '45%'}} />
         </div>
     );

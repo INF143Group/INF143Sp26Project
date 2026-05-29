@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import "../Styles/EventPopup.css";
+import "../../Styles/EventPopup.css";
 
 export default function EventAddPopup({ isOpen, onClose, defaultDate }){
     if (isOpen==false) return null;

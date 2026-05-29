@@ -6,7 +6,7 @@ import  dayGridPlugin  from "@fullcalendar/daygrid";
 import  interactionPlugin   from "@fullcalendar/interaction";
 import EventAddPopup from "./EventAddPopup.jsx";
 
-import "../Styles/Calendar.css";
+import "../../Styles/Calendar.css";
 
 const DEFAULT_ID="00000000-0000-0000-0000-000000000002";
 

@@ -196,7 +196,7 @@ function Chat() {
 
           <div className="chat-input-area">
             <input
-              className="chat-input"
+              className="chat-input-main"
               type="text"
               placeholder={`Message ${realUser ? realUser.username : selectedMock?.name}...`}
               value={input}

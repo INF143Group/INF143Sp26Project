@@ -20,7 +20,7 @@ function Help() {
       <div className={"div1"} id={"nav-bar"}>
         <NavBar/>
       </div>
-      <div className="login-wrapper" style={{ backgroundImage: `url(${bgMain})`}}>
+      <div className="login-wrapper">
         <button className="login-top-btn" onClick={() => navigate("/")}>Back</button>
         <div className="login-card">
           <div className="login-form">

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Login.css";
-import bgMain from "./assets/login-m.png";
 import NavBar from "./nav-bar";
 import Footer from "./footer.jsx";
 
@@ -25,11 +24,10 @@ function Help() {
         <div className="login-card">
           <div className="login-form">
           <textarea
-              className="login-input"
               placeholder="Write your problem......"
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
-              style={{ height: "150px", resize: "none", paddingTop: "10px" }}
+              style={{ height: "150px", resize: "none", paddingTop: "10px", color: "white" }}
           />
             <button className="login-submit-btn" onClick={handleSubmit}>
               Submit

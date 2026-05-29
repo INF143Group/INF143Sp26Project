@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from './supabase.js';
 import "../Styles/Login.css";
-import bgImage from "./assets/login-bg.png";
-import bgMain from "./assets/login-m.png";
 import NavBar from "./nav-bar.jsx";
 import Footer from "./footer.jsx";
 
@@ -36,7 +34,7 @@ const handleLogin = async () => {
       <div className="login-wrapper">
         <button className="login-top-btn" onClick={() => navigate("/")}>Back</button>
 
-        <div className="login-card" style={{ backgroundImage: `url(${bgImage})` }}>
+        <div className="login-card" style={{ backgroundColor: 'black' }}>
           <div className="login-form">
             <label className="login-label">Email</label>
             <input

@@ -80,7 +80,7 @@ function Chat() {
   };
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
       <div className = {"div1"} id = {"nav-bar"}>
         <NavBar/>
       </div>
@@ -212,7 +212,7 @@ function Chat() {
       <div className="div6" id="bottom-nav-bar" >
         <Footer/>
       </div>
-    </>
+    </div>
   );
 }
 

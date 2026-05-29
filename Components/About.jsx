@@ -3,36 +3,35 @@ import Footer from "./footer";
 
 function About() {
     return (
-        <>
-            <NavBar />
-
-            <div className="container mt-5 mb-5">
-
-                <h1 className="text-center mb-5">
-                    About PivotStack
-                </h1>
-
-                <p>
-                    PivotStack is a platform focused on helping students
-                    strengthen coding and interview skills through
-                    collaborative learning and practice.
-                </p>
-
-                <p>
-                    Users can engage with coding problems, community
-                    discussions, and educational resources designed
-                    to improve technical understanding.
-                </p>
-
-                <p>
-                    Our mission is to make technical interview preparation
-                    more accessible and supportive for students of all levels.
-                </p>
-
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', overflowX: 'hidden'}}>
+            <div className={"div1"} id={"nav-bar"}>
+                <NavBar/>
             </div>
-
-            <Footer />
-        </>
+            <div style={{flex: 1, overflowY: 'auto', backgroundColor: '#f0ebe3'}}>
+                <div className="container mt-5 mb-5">
+                    <h1 className="text-center mb-5">
+                        About PivotStack
+                    </h1>
+                    <p>
+                        PivotStack is a platform focused on helping students
+                        strengthen coding and interview skills through
+                        collaborative learning and practice.
+                    </p>
+                    <p>
+                        Users can engage with coding problems, community
+                        discussions, and educational resources designed
+                        to improve technical understanding.
+                    </p>
+                    <p>
+                        Our mission is to make technical interview preparation
+                        more accessible and supportive for students of all levels.
+                    </p>
+                </div>
+            </div>
+            <div className="div6" id="bottom-nav-bar" >
+                <Footer/>
+            </div>
+        </div>
     );
 }
 

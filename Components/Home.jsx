@@ -4,26 +4,21 @@ import Nav from 'react-bootstrap/Nav';
 
 function Home() {
     return (
-        <div style= {{position: "relative", height: "100vh", overflow: "hidden", background:'#f5f0eb'}}>
+        <div style={{ height: "100vh", overflow: "hidden", background: '#f5f0eb', display: 'flex', flexDirection: 'column' }}>
             <style>{`
-                #main-scroll::-webkit-scrollbar {display: none; }
-                #main-scroll {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
-                }
-            `}</style>
+             #main-scroll::-webkit-scrollbar { display: none; }
+             #main-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+             `}</style>
 
-            <div className = {"div1"} id = {"nav-bar"}>
+            <div className="div1" id="nav-bar">
                 <NavBar/>
             </div>
 
             <main
                 id="main-scroll"
                 style = {{
-                    position: "absolute",
-                    inset: 0,
+                    flex: 1,
                     overflowY: "auto",
-                    paddingTop: "var(--nav-height, 64px)",
                 }}
             >
                 <div className="text-center mb-5 mt-4" style = {{background:'#f5f0eb'}}>
@@ -86,6 +81,8 @@ function Home() {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className="div6" id="bottom-nav-bar" >
                     <Footer/>
                 </div>
             </main>

@@ -28,14 +28,27 @@ const IdePanel = () => {
             </div>
 
             {/* Language selector */}
-            <div style={{ padding: '4px 8px' }}>
-                <select value={selectedLang.language} onChange={handleLangChange}
-                    style={{ background: '#2d2d2d', color: '#d4d4d4', border: '1px solid #555',
-                            borderRadius: '4px', padding: '3px 8px', fontSize: '13px' }}>
+            <div style={{ padding: '4px 8px', borderBottom: '2px solid black', borderLeft: '2px solid black', borderRight: '2px solid black', borderTop: '0' }} >
+                <div style={{ display: 'flex', gap: '15px' }}>
                     {LANGUAGES.map(l => (
-                        <option key={l.language} value={l.language}>{l.label}</option>
+                        <button
+                            key={l.language}
+                            onClick={() => handleLangChange({ target: { value: l.language } })}
+                            style={{
+                                background: selectedLang.language === l.language ? '#d0e6da' : '#2d2d2d',
+                                color: selectedLang.language === l.language ? '#322D28' : '#d4d4d4',
+                                border: '1px solid #555',
+                                borderRadius: '4px',
+                                padding: '3px 8px',
+                                fontSize: '13px',
+                                cursor: 'pointer',
+                                fontWeight: selectedLang.language === l.language ? '600' : '400',
+                            }}
+                        >
+                            {l.label}
+                        </button>
                     ))}
-                </select>
+                </div>
             </div>
 
 

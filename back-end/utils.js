@@ -9,3 +9,7 @@ const supabase = createClient(
 export async function getConnection(){
     return supabase;
 }
+
+export async function getUserId(){
+    return sessionStorage.getItem("userId");
+}

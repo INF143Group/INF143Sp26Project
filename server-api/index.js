@@ -2,7 +2,6 @@ import { createRequire } from 'module';
 import { createClient } from '@supabase/supabase-js'
 import 'dotenv/config'
 import calendar from './apis/calendar/calendar.js';
-import { initializeSignaling } from './apis/video/signaling-server.js';
 import { ExpressPeerServer } from 'peer';
 
 
@@ -27,7 +26,7 @@ const server = app.listen(8080, () => {
 
 const http = require('http');
 const peerServer = ExpressPeerServer(server, {
-    path: '/peer'
+    path: '/'
 });
 
 app.use("/peer", peerServer);

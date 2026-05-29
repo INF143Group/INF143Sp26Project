@@ -172,6 +172,7 @@ export default function Calendar(){
                     ref={calendarRef}
                     plugins={[dayGridPlugin, interactionPlugin]}
                     initialView="dayGridMonth"
+                    showNonCurrentDates={false}
                     dateClick={displayAddEventDiv}
                     customButtons={{
                         addEventTodayButton: {

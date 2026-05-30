@@ -28,7 +28,7 @@ const NavBar = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
                         {isLoggedIn && (
-                            <Nav.Link href="/my-dashboard">Dashboard</Nav.Link>
+                            <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                             )}
                         {isLoggedIn && (
                             <Nav.Link href="/chat">Chats</Nav.Link>

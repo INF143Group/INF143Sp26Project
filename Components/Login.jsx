@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from './supabase.js';
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {supabase} from './supabase.js';
 import "../Styles/Login.css";
 import NavBar from "./nav-bar.jsx";
 import Footer from "./footer.jsx";
@@ -11,7 +11,7 @@ function Login() {
   const navigate = useNavigate();
 
 const handleLogin = async () => {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const {data, error} = await supabase.auth.signInWithPassword({
     email: email,
     password: password,
   });
@@ -27,14 +27,15 @@ const handleLogin = async () => {
 };
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', overflowX: 'hidden'}}>
+    <div style={{display: 'flex', flexDirection: 'column', overflowX: 'hidden',  minHeight: '100vh', background: '#f5f0eb'}}>
       <div className={"div1"} id={"nav-bar"}>
         <NavBar/>
       </div>
       <div className="login-wrapper">
+
         <button className="login-top-btn" onClick={() => navigate("/")}>Back</button>
 
-        <div className="login-card" style={{ backgroundColor: 'black' }}>
+        <div className="login-card">
           <div className="login-form">
             <label className="login-label">Email</label>
             <input
@@ -55,12 +56,10 @@ const handleLogin = async () => {
             <button className="login-submit-btn" onClick={handleLogin}>
               Login
             </button>
-            {/* Create account link */}
+
             <p className="login-create-text">
               Don't have an account?{" "}
-              <span className="login-create-link" onClick={() => navigate("/create")}>
-              Create one
-            </span>
+              <span className="login-create-link" onClick={() => navigate("/create")}>Create one</span>
             </p>
           </div>
         </div>

@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 
 function Home() {
     return (
-        <div style={{ height: "100vh", overflow: "hidden", background: '#f5f0eb', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ width: "100vw", height: "100vh", overflow: "hidden", background: '#f5f0eb', display: 'flex', flexDirection: 'column',  overflowX: 'hidden'}}>
             <style>{`
              #main-scroll::-webkit-scrollbar { display: none; }
              #main-scroll { -ms-overflow-style: none; scrollbar-width: none; }
@@ -19,6 +19,7 @@ function Home() {
                 style = {{
                     flex: 1,
                     overflowY: "auto",
+                    overflowX: "hidden",
                 }}
             >
                 <div className="text-center mb-5 mt-4" style = {{background:'#f5f0eb'}}>

@@ -20,13 +20,14 @@ const NavBar = () => {
     return (
         <Navbar data-bs-theme="dark" sticky="top" style={{alignSelf: 'center', zIndex: 99}}>
             <Container fluid>
-                <Navbar.Brand onClick={() => navigate("/")} style={{ cursor: 'pointer' }}>
+                <Navbar.Brand onClick={() => navigate("/home")} style={{ cursor: 'pointer' }}>
                     <img src={homeLogo} alt = "home" style = {{width: '42px', height: '38px'}} />
                 </Navbar.Brand>
 
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
+                        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                         <Nav.Link href="/problems">Problems</Nav.Link>
                         <Nav.Link href="/chat">Chats</Nav.Link>
                         <Nav.Link href="/resources">Resources</Nav.Link>

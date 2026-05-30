@@ -22,7 +22,7 @@ const handleLogin = async () => {
     // Save user ID to sessionStorage for other components to use
     sessionStorage.setItem('user_id', data.user.id);
     alert("Login successful!");
-    navigate("/");
+    navigate("/dashboard");
   }
 };
 
@@ -68,7 +68,6 @@ const handleLogin = async () => {
         <Footer/>
       </div>
     </div>
-
   );
 }
 

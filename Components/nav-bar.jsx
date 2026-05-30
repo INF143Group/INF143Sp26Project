@@ -20,39 +20,42 @@ const NavBar = () => {
     return (
         <Navbar data-bs-theme="dark" sticky="top" style={{alignSelf: 'center', zIndex: 99}}>
             <Container fluid>
-                <Navbar.Brand onClick={() => navigate("/")} style={{ cursor: 'pointer' }}>
+                <Navbar.Brand onClick={() => navigate("/")} style={{ cursor: 'pointer'}}>
                     <img src={homeLogo} alt = "home" style = {{width: '42px', height: '38px'}} />
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
-                        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-                        <Nav.Link href="/problems">Problems</Nav.Link>
-                        <Nav.Link href="/chat">Chats</Nav.Link>
-                        <Nav.Link href="/resources">Resources</Nav.Link>
-                        <Nav.Link href="/calendar">Calendar</Nav.Link>
-                        <Nav.Link onClick={() => navigate("/about")}>About</Nav.Link>
-                        <Nav.Link onClick={() => navigate("/help")}>Help</Nav.Link>
                         {isLoggedIn && (
-                            <Nav.Link href="/my-dashboard">My Dashboard</Nav.Link>
+                            <Nav.Link href="/my-dashboard">Dashboard</Nav.Link>
+                            )}
+                        {isLoggedIn && (
+                            <Nav.Link href="/chat">Chats</Nav.Link>
                         )}
+                        {isLoggedIn && (
+                            <Nav.Link href="/calendar">Calendar</Nav.Link>
+                        )}
+                        {isLoggedIn && (
+                            <Nav.Link href="/problems">Problems</Nav.Link>
+                        )}
+                        <Nav.Link href="/resources">Resources</Nav.Link>
+                        <Nav.Link href="/about">About</Nav.Link>
+                        <Nav.Link href="/help">Help</Nav.Link>
                     </Nav>
 
                     <Nav className="ms-3">
                        {isLoggedIn ? (
                                 <NavDropdown 
-                                    title={<img src={userIcon} alt="user" style={{ width: '25px', height: '25px' }}/>}
+                                    title={<img src={userIcon} alt="user" style={{width: '25px', height: '25px'}}/>}
                                     id="user-dropdown"
                                     align="end"
                                 >
-                                    <NavDropdown.Item onClick={() => navigate('/my-dashboard')}>My Dashboard</NavDropdown.Item>
-                                    <NavDropdown.Divider />
                                     <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
                                 </NavDropdown>
                             ) : (
-                                <Nav.Link onClick={() => navigate('/login')} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    <img src={profileIcon} alt="profile" style={{ width: '25px', height: '25px' }}/>
+                                <Nav.Link onClick={() => navigate('/login')} style={{ display: 'flex', alignItems: 'center', gap: '4px'}}>
+                                    <img src={profileIcon} alt="profile" style={{width: '25px', height: '25px'}}/>
                                 </Nav.Link>
                             )}
                               </Nav>

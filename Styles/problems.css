@@ -1,0 +1,84 @@
+.problems-parent {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr;
+    grid-template-rows:
+        max(36px, 5vh)
+        1fr
+        1fr
+        max(36px, 5vh);
+    gap: 8px;
+    height: 100vh;
+    min-width: 900px;
+    background-color: antiquewhite;
+    padding: 0 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.problems-parent .div1 {
+    grid-area: 1 / 1 / 2 / 4;
+    background-color: #A79A8A;
+    margin: 0 -8px;
+}
+
+.problems-list {
+    grid-area: 2 / 1 / 4 / 2;
+    overflow-y: auto;
+    background-color: #f5f0eb;
+    border: 2px solid #000;
+    border-radius: 6px;
+    padding: 8px;
+    min-height: 0;
+}
+
+.problems-display {
+    grid-area: 2 / 2 / 3 / 4;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.problems-ide {
+    grid-area: 3 / 2 / 4 / 4;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.problems-parent .div6 {
+    grid-area: 4 / 1 / 5 / 4;
+    background-color: #A79A8A;
+    margin: 0 -8px;
+}
+
+.problems-display > div,
+.problems-ide > div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+.problems-display .section-tags,
+.problems-ide .section-tags {
+    flex-shrink: 0;
+}
+
+.problems-display .section-content,
+.problems-ide .section-content {
+    flex: 1;
+    min-height: 0;
+}
+
+.problems-display .section-content,
+.problems-ide .section-content {
+    height: auto !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+}
+
+.problems-display .section-tags,
+.problems-ide .section-tags {
+    height: auto !important;
+    flex-shrink: 0 !important;
+}

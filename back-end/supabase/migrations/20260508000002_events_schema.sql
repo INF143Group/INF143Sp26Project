@@ -59,3 +59,21 @@ create policy "events: update as interviewer"
 create policy "events: delete as interviewer"
   on public.events for delete
   using (auth.uid() = interviewer_id);
+
+CREATE TABLE problems (
+    problem_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT NOT NULL,
+    difficulty VARCHAR(10) CHECK (difficulty IN ('Easy', 'Medium', 'Hard')),
+    tags TEXT[],
+    image_url VARCHAR(512),
+    is_approved BOOLEAN DEFAULT FALSE,
+    submitted_by UUID REFERENCES users(user_id),
+    reviewed_by UUID REFERENCES users(user_id),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+ALTER TABLE problems ADD COLUMN status VARCHAR(20)
+    DEFAULT 'pending'
+    CHECK (status IN ('pending', 'approved', 'rejected'));

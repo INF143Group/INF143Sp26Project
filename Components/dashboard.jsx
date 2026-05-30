@@ -5,6 +5,8 @@ import Footer from "./footer.jsx";
 import ProblemDisplay from './ProblemDisplay.jsx';
 import IdePanel from "./IDEPanel.jsx";
 import ExpandablePanel from "./ExpandablePanel.jsx";
+import App from "../openvidu-livekit-tutorials/application-client/openvidu-react/src/App.tsx";
+import {InterviewProvider} from "../openvidu-livekit-tutorials/application-client/openvidu-react/src/interviewContext.tsx";
 
 function dashboard() {
     return (
@@ -14,16 +16,18 @@ function dashboard() {
                     <NavBar/>
                 </div>
 
-                <div className="section-tags div2" id="video-top">
-                    <p>Interview</p>
-                </div>
                 <div className="section-tags div4" id="messages-header">
                     <p>Chat</p>
                 </div>
 
-                <div className="section-content div3" id="video-container">
-
+                <div className="div3" id="video-container">
+                    <InterviewProvider>
+                        <ExpandablePanel label="Interview" showButton={false}>
+                            <App/>
+                        </ExpandablePanel>
+                    </InterviewProvider>
                 </div>
+
                 <div className="section-content div5" id="messages-container">
                     <div className="card">
                         <div className="chat-window">

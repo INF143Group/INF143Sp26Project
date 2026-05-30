@@ -38,7 +38,7 @@ function App() {
                             <p className="text-white-50 m-0">Try a code problem today!</p>
                         </div>
                         <button className="btn btn-light btn-lg px-4 fw-semibold text-dark shadow-sm">
-                            <Nav.Link href="/login">Sign Up Now!</Nav.Link>
+                            <Nav.Link href="/create">Sign Up Now!</Nav.Link>
                         </button>
                     </div>
 

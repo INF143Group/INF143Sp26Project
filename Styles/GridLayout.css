@@ -18,7 +18,8 @@ body {
     height: 100%;
 }
 
-/* --- Layout Grid --- */
+
+/*Layout grid*/
 .parent {
     display: grid;
     grid-template-columns: repeat(2, 1fr) 1.8fr;
@@ -38,7 +39,71 @@ body {
     width: 100%;
 }
 
-/* --- Navbar --- */
+/*Grid Areas*/
+.div1 { grid-area: 1 / 1 / 2 / 4; background-color: #A79A8A; align-items: center; margin: 0 -8px;}
+.div2 { grid-area: 2 / 1 / 3 / 2;}
+.div3 { grid-area: 2 / 1 / 6 / 2;}
+.div4 { grid-area: 6 / 1 / 7 / 2; align-self: start; z-index: 3;}
+.div5 { grid-area: 6 / 1 / 10 / 2; display: flex; flex-direction: column; padding: 0; overflow: hidden;}
+.div6 { grid-area: 10 / 1 / 11 / 4; background-color:#A79A8A; margin: 0 -8px;}
+
+/* Expandable panel wrappers */
+.expandable-problem {
+    grid-area: 2 / 2 / 10 / 3;
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    min-height: 0;
+}
+
+.expandable-ide {
+    grid-area: 2 / 3 / 10 / 4;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+}
+
+/* Video container overrides */
+.div3 {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.div3 > div {
+    display: flex;
+    height: 100%;
+    min-height: 0;
+}
+
+.div3 .section-tags {
+    flex-shrink: 0;
+    height: auto !important;
+}
+
+.div3 .section-content {
+    flex: 1 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: hidden;
+}
+
+.div3 .expandable-inner {
+    height: 100%;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+}
+
+.div3 .expandable-inner > * {
+    flex: 1;
+    min-height: 0;
+}
+
+
+/*Navbar*/
 .navbar {
     --bs-navbar-padding-y: 0;
 }
@@ -48,10 +113,10 @@ body {
     padding: 0 8px !important;
     user-select: none;
     transition: color 0.2s ease, text-shadow 0.2s ease;
-    border-right: 1px solid rgb(201, 201, 201)
+    border-right: 1px solid rgb(201, 201, 201);
 }
 
-.nav-link:last-child{
+.nav-link:last-child {
     border-right: none;
 }
 
@@ -68,7 +133,8 @@ body {
     text-shadow: 0 0 8px rgba(237, 169, 169, 0.8);
 }
 
-/* --- Content Sections --- */
+
+/*Content sections shared primitives*/
 .section-tags, .section-content {
     height: 100%;
     width: 100%;
@@ -95,60 +161,12 @@ body {
 
 .section-content {
     z-index: 1;
-    padding: clamp(4px, 0.5vw, 10px);
     background-color: #f5f0eb;
     border-radius: 6px;
 }
 
-/* --- Grid Areas --- */
-.div1 { grid-area: 1 / 1 / 2 / 4; background-color: #A79A8A; align-items: center; margin: 0 -8px; }
-.div2 { grid-area: 2 / 1 / 3 / 2; }
-.div3 { grid-area: 2 / 1 / 6 / 2; }
-.div4 { grid-area: 6 / 1 / 7 / 2; align-self: start; z-index: 3; }
-.div5 { grid-area: 6 / 1 / 10 / 2; display: flex; flex-direction: column; padding: 0; overflow: hidden; }
-.div6 { grid-area: 10 / 1 / 11 / 4; background-color:#A79A8A; margin: 0 -8px; }
 
-/* Expandable panel wrappers */
-.expandable-problem {
-    grid-area: 2 / 2 / 10 / 3;
-    display: flex;
-    flex-direction: column;
-    align-self: start;
-    min-height: 0;
-}
-
-/* Header must not stretch inside the flex column */
-.expandable-problem .expandable-header {
-    height: auto;
-    flex-shrink: 0;
-}
-
-/* Problem body hugs content height */
-.expandable-problem .expandable-body {
-    height: auto;
-}
-
-.expandable-ide {
-    grid-area: 2 / 3 / 10 / 4;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 0;
-    padding: 0;
-}
-
-.expandable-ide .ide-header {
-    height: auto;
-    flex-shrink: 0;
-}
-
-/* ide-container fills all remaining space below the header */
-.expandable-ide > #ide-container {
-    flex: 1;
-    min-height: 0;
-}
-
-/* --- ExpandablePanel internals --- */
+/*Expandable Panel*/
 .expandable-header {
     cursor: pointer;
     display: flex;
@@ -181,11 +199,6 @@ body {
     border-top: none;
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
-    cursor: pointer;
-}
-
-.expandable-body:hover {
-    background-color: #f0ebe3;
 }
 
 .expandable-inner {
@@ -193,7 +206,22 @@ body {
     height: 100%;
 }
 
-/* Overflow blur + Continue Reading */
+.expandable-problem .expandable-header,
+.expandable-ide .ide-header {
+    height: auto;
+    flex-shrink: 0;
+}
+
+.expandable-problem .expandable-body {
+    height: auto;
+}
+
+.expandable-ide > #ide-container {
+    flex: 1;
+    min-height: 0;
+}
+
+/*Overflow blur + Continue Reading button*/
 .overflow-fade {
     position: absolute;
     bottom: 0;
@@ -227,7 +255,7 @@ body {
     color: #322D28;
 }
 
-/* --- Fullscreen overlay --- */
+/*Expanded panel full screen overlay*/
 .overlay-backdrop {
     position: fixed;
     inset: 0;
@@ -241,29 +269,28 @@ body {
 }
 
 @keyframes overlay-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
 
 .overlay-panel {
-    position: relative;
+    position: absolute;
     background: #f5f0eb;
-    border: 2px solid #322D28;
+    border: 2px solid black;
     border-radius: 10px;
     width: 96vw;
     height: 94vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.35);
     animation: panel-in 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index:9999;
+    justify-content: center;
+    padding: 10px;
 }
 
 @keyframes panel-in {
-    from { transform: scale(0.96) translateY(8px); opacity: 0; }
-    to   { transform: scale(1) translateY(0);      opacity: 1; }
+    from {transform: scale(0.96) translateY(8px); opacity: 0;}
+    to {transform: scale(1) translateY(0); opacity: 1;}
 }
 
-/* IDE overlay same size — full screen */
 .overlay-ide {
     width: 96vw;
     height: 94vh;
@@ -289,9 +316,7 @@ body {
     padding: 16px 20px 20px;
 }
 
-/* IDE overlay: both axes scrollable */
 .overlay-ide .overlay-content {
-    padding: 0;
     display: flex;
     flex-direction: column;
     overflow-x: auto;
@@ -299,7 +324,6 @@ body {
 }
 
 .overlay-close {
-    position: absolute;
     top: 10px;
     right: 14px;
     background: none;
@@ -324,15 +348,17 @@ body {
     color: #d0e6da;
 }
 
-/* --- Footer --- */
+
+/*Footer*/
 .footer-navbar { width: 100%; height: 100%; }
 .footer-container { gap: 0; }
-.footer-copyright, .footer-nav { font-size: clamp(10px, 1vw, 13px); line-height: 1.2; user-select: none; }
-.footer-copyright { color: #000000; }
+.footer-copyright,
+.footer-nav { font-size: clamp(10px, 1vw, 13px); line-height: 1.2; user-select: none; }
+.footer-copyright { color: #000000; padding-bottom: 5px; }
 .footer-dot { color: #e8e0d8; align-self: center; }
-.footer-copyright { padding-bottom: 5px; }
 
-/** --- Chat UI --- */
+
+/*Chat UI*/
 .card {
     width: 100%;
     height: 100%;
@@ -345,22 +371,29 @@ body {
     margin: 0;
 }
 
-.chat-window { flex: 1; overflow-y: auto; min-height: 0; }.chat-window { flex: 1; overflow-y: auto; min-height: 0; }
-.message-list { list-style: none; margin: 0; padding: 0; color: black; }
-.chat-input { flex: none; display: flex; align-items: start; padding: 10px; border-top: 2px solid #ccc; color: black; }
-.message-input { border: none; outline: none; padding: 5px; font-size: 14px; background: #fff; color: black; }
-.send-button { border: none; outline: none; background-color: #333; color: #fff; font-size: 14px; padding: 5px 10px; cursor: pointer; }
-.send-button:hover { background-color: rgb(255, 255, 255); color: rgb(0, 0, 0); box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25); }
+.chat-window {flex: 1; overflow-y: auto; min-height: 0;}
+.message-list {list-style: none; margin: 0; padding: 0; color: black;}
+.chat-input {flex: none; display: flex; align-items: start; padding: 10px; border-top: 2px solid #ccc; color: black;}
+.message-input {border: none; outline: none; padding: 5px; font-size: 14px; background: #fff; color: black;}
+.send-button {border: none; outline: none; background-color: #333; color: #fff; font-size: 14px; padding: 5px 10px; cursor: pointer;}
+.send-button:hover {background-color: rgb(255, 255, 255); color: rgb(0, 0, 0); box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);}
 
-/* --- Problem Display --- */
-.problem-display { overflow: visible; display: flex; flex-direction: column; gap: 10px; font-size: clamp(11px, 1.1vw, 14px); color: #2c2c2c; }
-.problem-header { display: flex; align-items: center; gap: 12px; }
-.problem-title { font-weight: 700; font-size: clamp(13px, 1.3vw, 17px); }
-.problem-difficulty { font-weight: 600; font-size: clamp(11px, 1vw, 13px); }
-.problem-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.problem-tag { background-color: #d0e6da; color: #2c2c2c; border-radius: 4px; padding: 2px 8px; font-size: clamp(10px, 0.9vw, 12px); }
-.problem-description { margin: 0; line-height: 1.5; }
-.problem-section { display: flex; flex-direction: column; gap: 6px; }
+
+/*Problem display card*/
+.problem-display {overflow: visible; display: flex; flex-direction: column; gap: 10px; font-size: clamp(11px, 1.1vw, 14px); color: #2c2c2c; }
+.problem-header {display: flex; align-items: center; gap: 12px; }
+.problem-title {font-weight: 700; font-size: clamp(13px, 1.3vw, 17px); }
+.problem-difficulty {font-weight: 600; font-size: clamp(11px, 1vw, 13px); }
+.problem-tags {display: flex; flex-wrap: wrap; gap: 6px; }
+.problem-tag {background-color: #d0e6da; color: #2c2c2c; border-radius: 4px; padding: 2px 8px; font-size: clamp(10px, 0.9vw, 12px); }
+.problem-description {margin: 0; line-height: 1.5; }
+.problem-section {display: flex; flex-direction: column; gap: 6px; }
+.problem-example,
+.problem-constraints {
+    font-family: monospace;
+    font-size: clamp(10px, 0.95vw, 13px);
+}
+
 .problem-example {
     background-color: #f0ebe5;
     border-left: 3px solid #d0e6da;
@@ -369,22 +402,48 @@ body {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    font-family: monospace;
-    font-size: clamp(10px, 0.95vw, 13px);
 }
+
 .problem-label { font-weight: 600; font-family: sans-serif; }
+
 .problem-constraints {
     margin: 0;
     padding-left: 20px;
     display: flex;
     flex-direction: column;
     gap: 2px;
-    font-family: monospace;
-    font-size: clamp(10px, 0.95vw, 13px);
 }
 .problem-loading { color: #999; font-size: 13px; padding: 10px; }
 
-/* Container for the editor components */
+
+/*IDE panel*/
+#ide-container,
+#ide-container-overlay {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #f5f0eb;
+    padding-top: 5px;
+}
+
+#ide-container {
+    height: 100%;
+    border: 2px solid #000;
+    border-radius: 0 0 6px 6px;
+    border-top: none;
+}
+
+#ide-container-overlay {
+    flex: 1;
+    min-height: 0;
+}
+
+#ide-container-overlay .editor-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
 .editor-wrapper {
     display: flex;
     flex: 1;
@@ -393,7 +452,6 @@ body {
     overflow: hidden;
 }
 
-/* Line number column styling */
 .line-numbers {
     padding-top: 20px;
     padding-left: 5px;
@@ -424,7 +482,6 @@ body {
     font-weight: 700;
 }
 
-/* Wraps render layer + textarea in inline mode */
 .editable-region {
     position: relative;
     flex: 1;
@@ -433,40 +490,6 @@ body {
     display: flex;
 }
 
-/* Render layer — visual display behind transparent textarea */
-.render-layer {
-    position: absolute;
-    inset: 0;
-    padding-top: 20px;
-    padding-bottom: 60px;
-    padding-left: 10px;
-    padding-right: 10px;
-    font-family: monospace;
-    font-size: 14px;
-    line-height: 21px;
-    overflow: hidden;
-    pointer-events: none;
-    white-space: pre-wrap;
-    word-break: break-all;
-    color: inherit;
-    box-sizing: border-box;
-}
-
-/* Each logical line in the render layer gets a hanging indent */
-.render-line {
-    display: block;
-    padding-left: 2ch;
-    text-indent: -2ch;
-    line-height: 21px;
-    word-break: break-all;
-    white-space: pre-wrap;
-}
-
-.render-line::before {
-    content: '';
-}
-
-/* Base textarea styles */
 .editable-area {
     flex: 1;
     height: 100%;
@@ -485,7 +508,6 @@ body {
     caret-color: #322D28;
 }
 
-/* Inline mode: transparent so render layer shows through */
 .editable-transparent {
     position: absolute;
     inset: 0;
@@ -498,7 +520,6 @@ body {
     caret-color: #322D28;
 }
 
-/* Overlay mode: fully visible, no wrap, horizontal scroll */
 .editable-overlay {
     position: relative;
     color: inherit;
@@ -509,39 +530,28 @@ body {
     width: 100%;
 }
 
-/* Ensure #ide-container remains relative for the run button */
-#ide-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    border: 2px solid #000;
-    border-radius: 0 0 6px 6px;
-    border-top: none;
-    background-color: #f5f0eb;
-    padding-top: 5px;
+.ide-output {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: monospace;
+    font-size: 13px;
+    padding: 10px 14px 60px 14px;
+    margin: 0;
+    white-space: pre-wrap;
+    max-height: 35%;
+    overflow-y: auto;
+    border-top: 1px solid #444;
+    flex-shrink: 0;
 }
 
-/* Overlay IDE container fills the overlay content area */
-#ide-container-overlay {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    flex: 1;
-    min-height: 0;
-    background-color: #f5f0eb;
-    padding-top: 5px;
+/*Run code button - from Uiverse.io by gharsh11032000*/
+.button-wrapper {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
 }
 
-/* editor-wrapper inside overlay must allow x-scroll to pass through */
-#ide-container-overlay .editor-wrapper {
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-
-/* From Uiverse.io by gharsh11032000 "FancyButton" */
 .animated-button {
     position: relative;
     display: flex;
@@ -599,37 +609,39 @@ body {
     box-shadow: none;
 }
 
-.animated-button:hover svg {
-    fill: #322D28;
-}
+.animated-button:hover svg {fill: #322D28;}
+.animated-button:hover .arr-1 {right: -20%;}
+.animated-button:hover .arr-2 {left: 10px;}
+.animated-button:hover .text {transform: translateX(8px);}
+.animated-button:hover .circle {width: 160px; height: 160px; opacity: 1;}
+.animated-button:active {scale: 0.95;}
 
-.animated-button:hover .arr-1 { right: -20%; }
-.animated-button:hover .arr-2 { left: 10px; }
-.animated-button:hover .text { transform: translateX(8px); }
-.animated-button:hover .circle { width: 160px; height: 160px; opacity: 1; }
 
-.animated-button:active {
-    scale: 0.95;
-}
-
-/* Wrapper to pin the button to bottom-right */
-.button-wrapper {
+/*IDE text editor render layer internals*/
+.render-layer {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
-    z-index: 10;
+    inset: 0;
+    padding: 20px 10px 60px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 21px;
+    overflow: hidden;
+    pointer-events: none;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: inherit;
+    box-sizing: border-box;
 }
 
-.ide-output {
-    background: #1e1e1e;
-    color: #d4d4d4;
-    font-family: monospace;
-    font-size: 13px;
-    padding: 10px 14px 60px 14px;
-    margin: 0;
+.render-line {
+    display: block;
+    padding-left: 2ch;
+    text-indent: -2ch;
+    line-height: 21px;
+    word-break: break-all;
     white-space: pre-wrap;
-    max-height: 35%;
-    overflow-y: auto;
-    border-top: 1px solid #444;
-    flex-shrink: 0;
+}
+
+.render-line::before {
+    content: '';
 }

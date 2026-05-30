@@ -1,5 +1,7 @@
 import NavBar from "./nav-bar";
 import Footer from "./footer";
+import Nav from 'react-bootstrap/Nav';
+
 
 function About() {
     return (
@@ -25,6 +27,15 @@ function About() {
                     <p>
                         Our mission is to make technical interview preparation
                         more accessible and supportive for students of all levels.
+                    </p>
+                    <h2 className="text-center mb-5">
+                        Credit to:
+                    </h2>
+                    <p>
+                        <Nav.Link  href="https://github.com/OpenVidu/openvidu-livekit-tutorials/tree/master/application-client/openvidu-react"
+                                   title="GitHub Repository"
+                                   target="_blank"
+                        >OpenVidu Github</Nav.Link>
                     </p>
                 </div>
             </div>

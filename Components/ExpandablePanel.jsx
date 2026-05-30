@@ -8,11 +8,11 @@ import { useState, useRef, useEffect, useCallback } from 'react';
  *
  * Props:
  *   label        - header text shown in the section-tags bar
- *   children     -panel content
+ *   children     - panel content
  *   overlayClass - extra className applied to the overlay content wrapper
  *   isEditor     - if true, skip overflow detection (editor manages its own scroll)
  */
-const ExpandablePanel = ({label, children, overlayClass = ''}) => {
+const ExpandablePanel = ({ label, children, overlayClass = '' }) => {
     const [expanded, setExpanded] = useState(false);
     const [overflowing, setOverflowing] = useState(false);
     const contentRef = useRef(null);
@@ -45,39 +45,37 @@ const ExpandablePanel = ({label, children, overlayClass = ''}) => {
         return () => { document.body.style.overflow = ''; };
     }, [expanded]);
 
-    const open = () => setExpanded(true);
+    const open  = () => setExpanded(true);
     const close = () => setExpanded(false);
 
     return (
         <>
-            <div style={{display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0}}>
-                <div
-                    className="section-tags expandable-header"
-                    onClick={open}
-                    title={`Expand ${label}`}
-                >
-                    <p>{label}</p>
-                    <span className="expand-icon" aria-hidden="true">⤢</span>
-                </div>
+            <div
+                className="section-tags expandable-header"
+                onClick={open}
+                title={`Expand ${label}`}
+            >
+                <p>{label}</p>
+                <span className="expand-icon" aria-hidden="true">⤢</span>
+            </div>
 
-                <div className="section-content expandable-body" onClick={open}>
-                    <div className="expandable-inner" ref={contentRef}>
-                        {children}
-                    </div>
-                    {overflowing && (
-                        <div className="overflow-fade">
-                            <button className="continue-reading-btn" onClick={open}>
-                                Continue Reading?
-                            </button>
-                        </div>
-                    )}
+            <div className="section-content expandable-body">
+                <div className="expandable-inner" ref={contentRef}>
+                    {children}
                 </div>
+                {overflowing && (
+                    <div className="overflow-fade">
+                        <button className="continue-reading-btn" onClick={open}>
+                            Continue Reading…
+                        </button>
+                    </div>
+                )}
             </div>
 
             {expanded && (
                 <div
                     className="overlay-backdrop"
-                    onClick={(e) => { if (e.target === e.currentTarget) close();}}
+                    onClick={(e) => { if (e.target === e.currentTarget) close(); }}
                 >
                     <div className={`overlay-panel ${overlayClass}`}>
                         <button

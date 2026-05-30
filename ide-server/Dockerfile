@@ -90,5 +90,9 @@ ENTRYPOINT []
 CMD ["/bin/sh", "-c", \
   "mkdir -p /piston/data/jobs /piston/data/isolate && \
    PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
-   sleep 3 && \
+   sleep 5 && \
+   curl -s -X POST http://localhost:2000/api/v2/packages -H 'Content-Type: application/json' -d '{\"language\":\"python\",\"version\":\"3.10.0\"}' & \
+   curl -s -X POST http://localhost:2000/api/v2/packages -H 'Content-Type: application/json' -d '{\"language\":\"java\",\"version\":\"15.0.2\"}' & \
+   curl -s -X POST http://localhost:2000/api/v2/packages -H 'Content-Type: application/json' -d '{\"language\":\"gcc\",\"version\":\"10.2.0\"}' & \
+   sleep 60 && \
    node /proxy.js"]

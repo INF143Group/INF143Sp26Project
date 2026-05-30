@@ -29,6 +29,9 @@ function Problems() {
             </div>
 
             <div className="problems-list">
+                <div className="problem-header">
+                    <span className="problem-title">{'Practice:'}</span>
+                </div>
                 <ProblemList problems={problems} onSelect={setSelectedProblem} selected={selectedProblem}/>
             </div>
 

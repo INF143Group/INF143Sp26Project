@@ -1,5 +1,5 @@
 // PLACEHOLDER
-// TODO: Connect to prompt database (API call, imported JSON, etc.)
+// Connect to prompt database here
 // Expected format: [{ id, title, difficulty, tags: [], description]
 
 const difficultyColor = {

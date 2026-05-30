@@ -20,7 +20,7 @@ const NavBar = () => {
     return (
         <Navbar data-bs-theme="dark" sticky="top" style={{alignSelf: 'center', zIndex: 99}}>
             <Container fluid>
-                <Navbar.Brand onClick={() => navigate("/home")} style={{ cursor: 'pointer' }}>
+                <Navbar.Brand onClick={() => navigate("/")} style={{ cursor: 'pointer' }}>
                     <img src={homeLogo} alt = "home" style = {{width: '42px', height: '38px'}} />
                 </Navbar.Brand>
 

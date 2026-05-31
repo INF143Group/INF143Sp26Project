@@ -26,6 +26,12 @@ const handleLogin = async () => {
   }
 };
 
+const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleLogin();
+    }
+};
+
   return (
     <div style={{display: 'flex', flexDirection: 'column', overflowX: 'hidden',  minHeight: '100vh', background: '#f5f0eb'}}>
       <div className={"div1"} id={"nav-bar"}>
@@ -52,6 +58,7 @@ const handleLogin = async () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder=""
+                onKeyDown={handleKeyDown}
             />
             <button className="login-submit-btn" onClick={handleLogin}>
               Login

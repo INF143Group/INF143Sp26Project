@@ -1,8 +1,8 @@
-import { createRequire } from 'module';
-import { createClient } from '@supabase/supabase-js'
+import {createRequire} from 'module';
+//import { createClient } from '@supabase/supabase-js'
 import 'dotenv/config'
 import calendar from './apis/calendar/calendar.js';
-import { ExpressPeerServer } from 'peer';
+import {ExpressPeerServer} from 'peer';
 
 
 const require = createRequire(import.meta.url);
@@ -24,7 +24,7 @@ const server = app.listen(8080, () => {
     console.log("Server is running on port 8080");
 });
 
-const http = require('http');
+//const http = require('http');
 const peerServer = ExpressPeerServer(server, {
     path: '/'
 });

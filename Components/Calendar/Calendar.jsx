@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 import {ToastContainer, toast} from "react-toastify";
-import NavBar from "./nav-bar.jsx";
+import NavBar from "../nav-bar.jsx";
 import EventAddPopup from "./EventAddPopup.jsx";
 import  FullCalendar  from "@fullcalendar/react";
 import  dayGridPlugin  from "@fullcalendar/daygrid";
 import  interactionPlugin   from "@fullcalendar/interaction";
 
-import "../Styles/Calendar.css";
-import Footer from "./footer.jsx";
+import "../../Styles/Calendar.css";
+import Footer from "../footer.jsx";
 
 const DEFAULT_ID="00000000-0000-0000-0000-000000000002";
 

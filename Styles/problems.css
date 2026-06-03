@@ -25,10 +25,10 @@
     grid-area: 2 / 1 / 4 / 2;
     overflow-y: auto;
     background-color: #f5f0eb;
-    border: 2px solid #000;
     border-radius: 6px;
-    padding: 8px;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .problems-display {

@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {supabase} from './supabase.js';
 import NavBar from "./nav-bar.jsx";
 import ExpandablePanel from "./ExpandablePanel.jsx";
@@ -29,14 +29,13 @@ function Problems() {
             </div>
 
             <div className="problems-list">
-                <div className="problem-header">
-                    <span className="problem-title">{'Practice:'}</span>
-                </div>
-                <ProblemList problems={problems} onSelect={setSelectedProblem} selected={selectedProblem}/>
+                <ExpandablePanel label="Prompts" showButton={false}>
+                    <ProblemList problems={problems} onSelect={setSelectedProblem} selected={selectedProblem}/>
+                </ExpandablePanel>
             </div>
 
             <div className="problems-display">
-                <ExpandablePanel label="Problem:" overlayClass="overlay-problem">
+                <ExpandablePanel label="Problem" showButton={false}>
                     <ProblemDisplay problem={selectedProblem}/>
                 </ExpandablePanel>
             </div>
@@ -53,21 +52,35 @@ function Problems() {
         </div>
     );
 }
-
-function ProblemList({problems, onSelect, selected }) {
+function ProblemList({problems, onSelect, selected}) {
     return (
-        <ul className="problem-list-items">
-            {problems.map(p => (
-                <li
-                    key={p.problem_id}
-                    className={`problem-list-item ${selected?.problem_id === p.problem_id ? 'selected' : ''}`}
-                    onClick={() => onSelect(p)}
-                >
-                    {p.name}
-                </li>
-            ))}
+        <ul
+            className="problem-list-items"
+            style={{ listStyleType: 'none', padding: 0, margin: 0 }}
+        >
+            {problems.map((p, index) => {
+                const isSelected = selected?.problem_id === p.problem_id;
+
+                return (
+                    <li
+                        key={p.problem_id}
+                        className={`problem-list-item ${isSelected ? 'selected' : ''}`}
+                        onClick={() => onSelect(p)}
+                        style={{
+                            padding: '12px 16px',
+                            cursor: 'pointer',
+                            borderBottom: index === problems.length - 1 ? 'none' : '1px solid black',
+                            backgroundColor: isSelected ? '#d0e6da' : 'transparent',
+                            fontWeight: isSelected ? '600' : 'normal'
+                        }}
+                    >
+                        {p.name}
+                    </li>
+                );
+            })}
         </ul>
     );
 }
 
 export default Problems
+

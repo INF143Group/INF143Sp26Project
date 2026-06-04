@@ -6,7 +6,7 @@ dist/
 dist-ssr/
 
 # Environment variables
-.env
+frontend/.env
 .env.development.local
 .env.test.local
 .env.production.local
@@ -26,3 +26,7 @@ Thumbs.db
 
 # Vite cache
 .vite/
+
+api-server/.env
+livekit-server/.env
+ide-server/.env

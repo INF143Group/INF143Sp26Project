@@ -1,4 +1,5 @@
-import {getConnection} from "../../../database/utils.js"
+import {getConnection} from "../../utils.js"
+
 let dummyEvents = [
     {
         id: 1,

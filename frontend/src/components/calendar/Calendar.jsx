@@ -5,6 +5,7 @@ import EventAddPopup from "./EventAddPopup.jsx";
 import  FullCalendar  from "@fullcalendar/react";
 import  dayGridPlugin  from "@fullcalendar/daygrid";
 import  interactionPlugin   from "@fullcalendar/interaction";
+import { supabase } from "../../lib/supabase.js";
 
 import "../../styles/Calendar.css";
 import Footer from "../layout/footer.jsx";
@@ -17,18 +18,41 @@ let calendarRef = null;
 let eventPopupRef = null;
 let defaultDate, setDefaultDate = null;
 let isSchedulerOpen, setIsSchedulerOpen = null;
+let token = await supabase.auth.getSession().then(({ data: { session } }) => session?.access_token);
 
 function displayAddEventDiv(e){
     console.log(e);
     setDefaultDate(e.dateStr);
     setIsSchedulerOpen(true);
 }
+async function sendEmail(toEmail, otherPerson, date, time){
+    console.log("Preparing to send email to " + toEmail + " about interview with " + otherPerson + " on " + date + " at " + time);
+    const resp = await fetch(ROOT + "api/mail/send-email", {
+        method: "POST",
+        body: JSON.stringify({toEmail, otherPerson, date, time}),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        }
+    })
+
+    if (!resp.ok) {
+        throw new Error("Failed to send email");
+    }
+
+    let respJson = await resp.json();
+    if (respJson.success===false){
+        throw new Error("Failed to send email");
+    }
+    return respJson;
+}
 async function uploadEvent(dateObj){
     const resp = await fetch(ROOT + "api/calendar", {
         method: "POST",
         body: JSON.stringify(dateObj),
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
         }
     });
 
@@ -58,18 +82,23 @@ function submitAndHideDiv(dateObj){
         if (status.success===false){
             toast.error("Failed to schedule event.");
         } else {
-            // calendarRef.current.getApi().addEvent({
-            //     title: "Interview with " + dateObj.interviewerName,
-            //     start: dateObj.date + " " + dateObj.time,
-            // })
             calendarRef.current.getApi().refetchEvents();
             toast.success(() => AddSubtext(dateObj), {
                 className: '!w-fit !max-w-none',
             });
+
+            sendEmail(dateObj.interviewerEmail, dateObj.interviewerName, dateObj.date, dateObj.time).then((emailStatus) => {
+                if (emailStatus.success===false){
+                    toast.error("Failed to send email.");
+                } else{
+                    toast.success("Email sent to the other participant.");
+                }
+            })
         }
     }).catch(() => {
         toast.error("Failed to schedule event.");
     });
+
     setIsSchedulerOpen(false);
 }
 function AddSubtext(dateObj){
@@ -95,12 +124,21 @@ async function getEvents(){
         return [];
     }
 
-    const resp = await fetch(ROOT + "api/calendar?userId="+getUserId());
+
+    const resp = await fetch(ROOT + "api/calendar?userId="+getUserId(),
+    {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
     if (!resp.ok) {
         console.error("Failed to fetch events");
         return [];
     }
     const respJson = await resp.json();
+    console.log("respJson: ", respJson);
     if (respJson.success===false){
         console.error("Failed to parse resp json");
         return [];
@@ -134,6 +172,7 @@ async function getEvents(){
         })
     
     });
+    console.log("return events: ", returnEvents);
     return returnEvents;
 }
 
@@ -179,7 +218,8 @@ export default function Calendar(){
                             text: 'add an event today',
                             click: () => {
                                 let date = new Date(Date.now());
-                                let dateStr = date.getFullYear() + "-" + String((date.getMonth()+1)).padStart(2, '0') + "-" + date.getDate();
+                                let dateStr = date.getFullYear() + "-" + String((date.getMonth()+1)).padStart(2, '0') + "-" + String(date.getDate()).padStart(2, '0');
+                                console.log(date, dateStr);
                                 displayAddEventDiv({dateStr: dateStr})
                             }
                         }

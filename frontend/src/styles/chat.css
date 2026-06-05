@@ -246,50 +246,10 @@
 }
 
 .chat-wrapper {
-.chat-wrapper {
   display: flex;
   height: calc(100vh - 94px);
   width: 100%;
   background: #f0ebe3;
   font-family: sans-serif;
-  min-width: 700px;  /* just add this line */
-}
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-  .chat-wrapper {
-    height: calc(100vh - 94px);
-  }
-
-  .chat-sidebar {
-    width: 100%;
-    border-right: none;
-  }
-
-  .chat-main {
-    width: 100%;
-  }
-
-  .chat-back-btn {
-    display: inline-flex !important;
-    font-size: 20px;
-  }
-
-  .chat-bubble {
-    max-width: 80%;
-  }
-}
-
-@media (min-width: 769px) {
-  .chat-sidebar {
-    display: flex !important;
-  }
-
-  .chat-main {
-    display: flex !important;
-  }
-
-  .chat-back-btn {
-    display: none !important;
-  }
+  min-width: 700px;
 }

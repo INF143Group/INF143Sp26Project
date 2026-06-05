@@ -9,8 +9,8 @@ const supabaseUrl = isDevelopment
     : process.env.SUPABASE_URL;
 
 const supabaseKey = isDevelopment
-    ? process.env.VITE_SUPABASE_ANON_KEY
-    : process.env.SUPABASE_ANON_KEY;
+    ? process.env.VITE_SUPABASE_SECRET_KEY
+    : process.env.SUPABASE_SECRET_KEY;
 
 const supabase = createClient(
     supabaseUrl,

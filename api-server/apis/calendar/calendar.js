@@ -163,7 +163,7 @@ async function catchNewEventRequest(req, res){
             
         }
         
-        let token = valdiateToken(req);
+        let token = validateToken(req);
         if (!token){
             res.status(401).send({
                 success: false,

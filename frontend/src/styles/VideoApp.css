@@ -184,6 +184,7 @@
 .input-group input:focus {
     border-color: #A79A8A;
     background-color: #fcfbf9;
+    color: #322D28;
 }
 
 .join-btn {

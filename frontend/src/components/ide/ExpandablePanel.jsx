@@ -61,7 +61,7 @@ const ExpandablePanel = ({ label, children, overlayClass = '' }) => {
 
             <div className="section-content expandable-body">
                 <div className="expandable-inner" ref={contentRef}>
-                    {children}
+                    {!expanded && children}
                 </div>
                 {overflowing && (
                     <div className="overflow-fade">

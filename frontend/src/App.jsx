@@ -34,7 +34,7 @@ function App() {
                         style= {{backgroundColor: "#1e293b"}}
                     >
                         <div>
-                            <h3 className="fw-bold mb-1">Ready to start?</h3>
+                            <h2 className="fw-bold mb-1">Ready to start?</h2>
                             <p className="text-white-50 m-0">Try a code problem today!</p>
                         </div>
                         <button className="btn btn-light btn-lg px-4 fw-semibold text-dark shadow-sm">
@@ -60,7 +60,7 @@ function App() {
                                     <div className="text-primary mb-3">
                                         <i className="bi bi-people-fill fs-3"></i>
                                     </div>
-                                    <h4 className="fw-bold text-dark mb-2">Community Support</h4>
+                                    <h2 className="fw-bold text-dark mb-2">Community Support</h2>
                                     <p className="text-muted m-0">
                                         Support for multiple languages and collaborative problem solving with thousands of developers.
                                     </p>
@@ -74,7 +74,7 @@ function App() {
                                     <div className="text-primary mb-3">
                                         <i className="bi bi-book-half fs-3"></i>
                                     </div>
-                                    <h4 className="fw-bold text-dark mb-2">Resources</h4>
+                                    <h2 className="fw-bold text-dark mb-2">Resources</h2>
                                     <p className="text-muted m-0">
                                         Learn from professionals in the industry with tailored documentation, video breakdowns, and guides.
                                     </p>

@@ -29,7 +29,7 @@ RUN wget https://www.python.org/ftp/python/3.10.0/Python-3.10.0.tgz && \
 RUN mkdir -p /usr/share/man/man1 && \
     apt-get install -y default-jdk || true
 
-# Piston language packages (~2 min, cached after)
+# Piston language packages v2 — forces reinstall
 RUN PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
     sleep 8 && \
     curl -s -X POST http://localhost:2000/api/v2/packages \
@@ -50,7 +50,7 @@ RUN cd / && npm install
 
 # ── FAST-CHANGING LAYERS (only these rebuild on normal deploys) ──────────────
 
-# Isolate shim — move here so fixing bugs doesn't bust Python/Java cache
+# Isolate shim — fixing bugs here doesn't bust Python/Java cache
 RUN mkdir -p /piston/data/isolate && \
     mv /usr/local/bin/isolate /usr/local/bin/isolate.real || true && \
     printf '#!/bin/sh\n\
@@ -90,9 +90,5 @@ ENTRYPOINT []
 CMD ["/bin/sh", "-c", \
   "mkdir -p /piston/data/jobs /piston/data/isolate && \
    PISTON_BIND_ADDRESS=0.0.0.0:2000 node /piston_api/src/index.js & \
-   sleep 5 && \
-   curl -s -X POST http://localhost:2000/api/v2/packages -H 'Content-Type: application/json' -d '{\"language\":\"python\",\"version\":\"3.10.0\"}' & \
-   curl -s -X POST http://localhost:2000/api/v2/packages -H 'Content-Type: application/json' -d '{\"language\":\"java\",\"version\":\"15.0.2\"}' & \
-   curl -s -X POST http://localhost:2000/api/v2/packages -H 'Content-Type: application/json' -d '{\"language\":\"gcc\",\"version\":\"10.2.0\"}' & \
-   sleep 60 && \
+   sleep 3 && \
    node /proxy.js"]

@@ -27,7 +27,7 @@ function displayAddEventDiv(e){
 }
 async function sendEmail(toEmail, otherPerson, date, time){
     console.log("Preparing to send email to " + toEmail + " about interview with " + otherPerson + " on " + date + " at " + time);
-    const resp = await fetch(ROOT + "api/mail/send-email", {
+    const resp = await fetch(ROOT + "api/mail/send-interview-email", {
         method: "POST",
         body: JSON.stringify({toEmail, otherPerson, date, time}),
         headers: {

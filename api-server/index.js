@@ -21,7 +21,7 @@ app.route("/api/calendar")
     .post((req, res) => {
         calendar.catchNewEventRequest(req, res);
     });
-app.route("/api/mail/send-email").post(async (req, res) => {
+app.route("/api/mail/send-interview-email").post(async (req, res) => {
     mail.processEmailRequest(req, res);
 });
 

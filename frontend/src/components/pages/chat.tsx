@@ -23,7 +23,7 @@ const mockMessages: Record<number, { from: string; text: string; time: string; s
   2: [{ from: "Marcus Thorne", text: "The meeting is pushed to 4 PM today.", time: "10:20 AM", self: false }],
   3: [{ from: "Sarah Chen", text: "Did you see the latest update from the repo?", time: "9:15 AM", self: false }],
   4: [{ from: "Alex", text: "Check out the new bento layout!", time: "8:00 AM", self: false }],
-};
+];
 
 function Chat() {
   const [selectedMock, setSelectedMock] = useState(mockUsers[0]);
@@ -37,6 +37,7 @@ function Chat() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const realUserRef = useRef<any>(null);
   const currentUserIdRef = useRef<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +47,10 @@ function Chat() {
       currentUserIdRef.current = id;
     });
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [realMessages]);
 
   useEffect(() => {
     if (!realUser || !currentUserId) return;
@@ -66,9 +71,7 @@ function Chat() {
         if (isRelevant) {
           setRealMessages((prev) => {
             if (prev.some((m) => m.message_id === msg.message_id)) return prev;
-            return [...prev, msg].sort((a, b) =>
-              new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
-            );
+            return [...prev, msg];
           });
         }
       })
@@ -120,9 +123,7 @@ function Chat() {
     if (data) {
       setRealMessages((prev) => {
         if (prev.some((m) => m.message_id === data.message_id)) return prev;
-        return [...prev, data].sort((a, b) =>
-          new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
-        );
+        return [...prev, data];
       });
     }
   };
@@ -209,23 +210,26 @@ function Chat() {
 
           <div className="chat-messages">
             {realUser ? (
-              realMessages.map((msg, i) => (
-                <div key={msg.message_id || i} className={`chat-message ${msg.sender_id === currentUserId ? "self" : "other"}`}>
-                  {msg.sender_id !== currentUserId && (
-                    <div className="chat-avatar small" style={{ background: "#6c63ff" }}>
-                      {realUser.username.slice(0, 2).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="chat-bubble">
-                    <p>{msg.body}</p>
-                    {msg.sent_at && (
-                      <span className="chat-time">
-                        {new Date(msg.sent_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      </span>
+              <>
+                {realMessages.map((msg, i) => (
+                  <div key={msg.message_id || i} className={`chat-message ${msg.sender_id === currentUserId ? "self" : "other"}`}>
+                    {msg.sender_id !== currentUserId && (
+                      <div className="chat-avatar small" style={{ background: "#6c63ff" }}>
+                        {realUser.username.slice(0, 2).toUpperCase()}
+                      </div>
                     )}
+                    <div className="chat-bubble">
+                      <p>{msg.body}</p>
+                      {msg.sent_at && (
+                        <span className="chat-time">
+                          {new Date(msg.sent_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))
+                ))}
+                <div ref={messagesEndRef} />
+              </>
             ) : (
               (messages[selectedMock?.id] || []).map((msg, i) => (
                 <div key={i} className={`chat-message ${msg.self ? "self" : "other"}`}>

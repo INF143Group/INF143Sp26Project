@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase.js";
 import "../../styles/chat.css";
@@ -34,14 +34,75 @@ function Chat() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [realUser, setRealUser] = useState<any>(null);
   const [realMessages, setRealMessages] = useState<any[]>([]);
-  const [showSidebar, setShowSidebar] = useState(true); // mobile toggle
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const navigate = useNavigate();
-  const currentUserId = sessionStorage.getItem("user_id");
+
+  // Get the real auth user ID from Supabase session
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setCurrentUserId(data.session?.user.id ?? null);
+    });
+  }, []);
+
+  // Real-time subscription + initial load when conversation changes
+  useEffect(() => {
+    if (!realUser || !currentUserId) return;
+
+    // Load existing messages ordered by sent_at
+    loadMessages(realUser);
+
+    const channel = supabase
+      .channel(`messages-${currentUserId}-${realUser.user_id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+        },
+        (payload) => {
+          const msg = payload.new;
+          const isRelevant =
+            (msg.sender_id === realUser.user_id && msg.recipient_id === currentUserId) ||
+            (msg.sender_id === currentUserId && msg.recipient_id === realUser.user_id);
+
+          if (isRelevant) {
+            setRealMessages((prev) => {
+              // Avoid duplicates from optimistic update
+              const alreadyExists = prev.some(
+                (m) => m.message_id && m.message_id === msg.message_id
+              );
+              if (alreadyExists) return prev;
+              // Insert in chronological order
+              const updated = [...prev, msg];
+              return updated.sort((a, b) =>
+                new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
+              );
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => supabase.removeChannel(channel);
+  }, [realUser?.user_id, currentUserId]);
+
+  const loadMessages = async (user: any) => {
+    const { data } = await supabase
+      .from("messages")
+      .select("*")
+      .or(
+        `and(sender_id.eq.${currentUserId},recipient_id.eq.${user.user_id}),and(sender_id.eq.${user.user_id},recipient_id.eq.${currentUserId})`
+      )
+      .order("sent_at", { ascending: true });
+    setRealMessages(data || []);
+  };
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (!query.trim()) { setSearchResults([]); return; }
-    const { data } = await supabase.from("users")
+    const { data } = await supabase
+      .from("users")
       .select("user_id, username, display_name")
       .ilike("username", `%${query}%`)
       .limit(8);
@@ -54,15 +115,20 @@ function Chat() {
     setShowSearch(false);
     setSearchQuery("");
     setSearchResults([]);
-    setShowSidebar(false); // on mobile, go to chat view
-    const { data } = await supabase.from("messages").select("*")
-      .or(`and(sender_id.eq.${currentUserId},recipient_id.eq.${user.user_id}),and(sender_id.eq.${user.user_id},recipient_id.eq.${currentUserId})`)
-      .order("message_id", { ascending: true });
-    setRealMessages(data || []);
   };
 
   const handleSendReal = async () => {
-    if (!input.trim() || !realUser) return;
+    if (!input.trim() || !realUser || !currentUserId) return;
+    const optimistic = {
+      sender_id: currentUserId,
+      recipient_id: realUser.user_id,
+      subject: "chat",
+      body: input,
+      status: "sent",
+      sent_at: new Date().toISOString(),
+    };
+    setRealMessages((prev) => [...prev, optimistic]);
+    setInput("");
     await supabase.from("messages").insert([{
       sender_id: currentUserId,
       recipient_id: realUser.user_id,
@@ -70,32 +136,27 @@ function Chat() {
       body: input,
       status: "sent",
     }]);
-    setInput("");
-    handleSelectRealUser(realUser);
   };
 
   const handleSendMock = () => {
     if (!input.trim()) return;
-    const newMsg = { from: "You", text: input, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), self: true };
+    const newMsg = {
+      from: "You",
+      text: input,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      self: true,
+    };
     setMessages((prev) => ({ ...prev, [selectedMock.id]: [...(prev[selectedMock.id] || []), newMsg] }));
     setInput("");
   };
 
-  const selectMockUser = (user: typeof mockUsers[0]) => {
-    setSelectedMock(user);
-    setRealUser(null);
-    setShowSidebar(false); // on mobile, go to chat view
-  };
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minWidth: '700px' }}>
       <div className="div1" id="nav-bar">
         <NavBar />
       </div>
-
       <div className="chat-wrapper">
-        {/* SIDEBAR */}
-        <div className="chat-sidebar" style={{ display: showSidebar ? 'flex' : undefined }}>
+        <div className="chat-sidebar">
           <div className="chat-sidebar-header">
             <span className="chat-title">Messages</span>
           </div>
@@ -104,7 +165,7 @@ function Chat() {
 
           <div className="chat-user-list">
             {realUser && (
-              <div className="chat-user-item active" onClick={() => { setSelectedMock(null as any); setShowSidebar(false); }}>
+              <div className="chat-user-item active" onClick={() => setSelectedMock(null as any)}>
                 <div className="chat-avatar" style={{ background: "#6c63ff" }}>
                   {realUser.username.slice(0, 2).toUpperCase()}
                 </div>
@@ -116,8 +177,11 @@ function Chat() {
             )}
 
             {mockUsers.map((user) => (
-              <div key={user.id} className={`chat-user-item ${selectedMock?.id === user.id ? "active" : ""}`}
-                onClick={() => selectMockUser(user)}>
+              <div
+                key={user.id}
+                className={`chat-user-item ${selectedMock?.id === user.id ? "active" : ""}`}
+                onClick={() => { setSelectedMock(user); setRealUser(null); }}
+              >
                 <div className="chat-avatar" style={{ background: user.color }}>{user.initials}</div>
                 <div className="chat-user-info">
                   <span className="chat-user-name">{user.name}</span>
@@ -164,17 +228,8 @@ function Chat() {
           </div>
         </div>
 
-        {/* MAIN CHAT */}
-        <div className="chat-main" style={{ display: showSidebar ? 'none' : 'flex' }}>
+        <div className="chat-main">
           <div className="chat-main-header">
-            {/* Back button for mobile */}
-            <button
-              className="chat-icon-btn chat-back-btn"
-              onClick={() => setShowSidebar(true)}
-              style={{ marginRight: "4px" }}
-            >
-              ←
-            </button>
             <div className="chat-avatar" style={{ background: realUser ? "#6c63ff" : selectedMock?.color }}>
               {realUser ? realUser.username.slice(0, 2).toUpperCase() : selectedMock?.initials}
             </div>
@@ -193,7 +248,14 @@ function Chat() {
                       {realUser.username.slice(0, 2).toUpperCase()}
                     </div>
                   )}
-                  <div className="chat-bubble"><p>{msg.body}</p></div>
+                  <div className="chat-bubble">
+                    <p>{msg.body}</p>
+                    {msg.sent_at && (
+                      <span className="chat-time">
+                        {new Date(msg.sent_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))
             ) : (
@@ -228,7 +290,6 @@ function Chat() {
           </div>
         </div>
       </div>
-
       <div className="div6" id="bottom-nav-bar">
         <Footer />
       </div>

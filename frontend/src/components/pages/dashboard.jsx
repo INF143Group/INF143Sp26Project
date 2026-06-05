@@ -8,9 +8,23 @@ import ExpandablePanel from "../ide/ExpandablePanel.jsx";
 import VideoApp from "../video/VideoApp.tsx";
 import { InterviewProvider } from "../../context/interviewContext.tsx";
 import { useState, useEffect, useRef } from 'react';
- 
+import {supabase} from '../../lib/supabase.js';
 
-function dashboard() {
+function Dashboard() {
+    const [problems, setProblems] = useState([]);
+    const [selectedProblem, setSelectedProblem] = useState(null);
+
+    useEffect(() => {
+        async function fetchProblems() {
+            const {data, error} = await supabase
+                .from('problems')
+                .select('*')
+                .eq('status', 'approved');
+            if (!error) setProblems(data);
+        }
+        fetchProblems().catch(console.error);
+    }, []);
+
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
 
@@ -43,6 +57,17 @@ useEffect(() => {
                             <VideoApp/>
                         </ExpandablePanel>
                     </InterviewProvider>
+                </div>
+                <div className="section-content div5" id="messages-container">
+                    <div className="card">
+                        <div className="chat-window">
+                            <ul className="message-list"></ul>
+                        </div>
+                        <div className="chat-input">
+                            <input id="textarea" type="text" className="message-input" placeholder="Type your message here"/>
+                            <button className="send-button">Send</button>
+                        </div>
+                    </div>
                 </div>
 
                <div className="section-content div5" id="messages-container">
@@ -87,14 +112,38 @@ useEffect(() => {
 
                 <div className="expandable-problem">
                     <ExpandablePanel label="Problem:" overlayClass="overlay-problem">
-                        <ProblemDisplay />
+                        <div style={{paddingBottom: '8px', borderBottom: '1px solid black'}}>
+                            <select
+                                style={{
+                                    width: '100%',
+                                    padding: '8px, 10px',
+                                    borderRadius: '6px',
+                                    fontSize: '14px',
+                                    cursor: 'pointer',
+                                    color: 'black',
+                                    backgroundColor: '#f0ebe3'
+                                }}
+                                value={selectedProblem?.problem_id || ''}
+                                onChange={(e) => {
+                                    const found = problems.find(p => p.problem_id === e.target.value);
+                                    setSelectedProblem(found || null);
+                                }}
+                            >
+                                <option value="">Pick a problem to get started</option>
+                                {problems.map(p => (
+                                    <option key={p.problem_id} value={p.problem_id}>
+                                        {`${p.name} [${p.difficulty}]`}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <ProblemDisplay problem={selectedProblem} dropdownMode={true}/>
                     </ExpandablePanel>
                 </div>
 
                 <div className="expandable-ide">
                     <IdePanel />
                 </div>
-
                 <div className="div6" id="bottom-nav-bar">
                     <Footer/>
                 </div>
@@ -103,4 +152,4 @@ useEffect(() => {
     );
 }
 
-export default dashboard;
+export default Dashboard;

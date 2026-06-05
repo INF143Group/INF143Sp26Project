@@ -138,8 +138,6 @@ async function sendHelpEmail(fromEmail, message) {
 async function processHelpEmailRequest(req, res) {
     let body = await parseBody(req);
 
-console.log("Parsed body:", body);
-
     if (!body) {
         res.status(401).send({
             success: false,

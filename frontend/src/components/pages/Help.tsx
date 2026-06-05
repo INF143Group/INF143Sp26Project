@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import "../../styles/Login.css";
 import NavBar from "../layout/nav-bar";
 import Footer from "../layout/footer.jsx";
-import { supabase } from "../../lib/supabase";
+import { supabase, getCurrentUserInfo } from "../../lib/supabase";
 
 const ROOT = "http://localhost:8080/";  
 
@@ -21,10 +21,14 @@ function Help() {
   const navigate = useNavigate();
 
   async function sendHelpEmail(){
-    console.log("Preparing to send help email to " + 'temp@email.com' + " with message: " + problem);
+    let user_info = await getCurrentUserInfo();
+    if (!user_info || !user_info.email) {
+        throw new Error("User email not found");
+    }
+    console.log("Preparing to send help email to self from " + user_info.email + " with message: " + problem);
     const resp = await fetch(ROOT + "api/mail/send-help-email", {
         method: "POST",
-        body: JSON.stringify({fromEmail: 'temp@email.com', message: problem}),
+        body: JSON.stringify({fromEmail: user_info.email, message: problem}),
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + token

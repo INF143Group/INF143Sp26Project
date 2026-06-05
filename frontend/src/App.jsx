@@ -37,9 +37,9 @@ function App() {
                             <h2 className="fw-bold mb-1">Ready to start?</h2>
                             <p className="text-white-50 m-0">Try a code problem today!</p>
                         </div>
-                        <button className="btn btn-light btn-lg px-4 fw-semibold text-dark shadow-sm">
+                        <div className="btn btn-light btn-lg px-4 fw-semibold text-dark shadow-sm">
                             <Nav.Link href="/create">Sign Up Now!</Nav.Link>
-                        </button>
+                        </div>
                     </div>
 
                     <div className="p-5 mb-5 bg-white border border-light rounded-4 shadow-sm">

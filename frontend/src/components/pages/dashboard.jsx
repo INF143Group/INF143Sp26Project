@@ -6,9 +6,26 @@ import ProblemDisplay from './ProblemDisplay.jsx';
 import IdePanel from "../ide/IDEPanel.jsx";
 import ExpandablePanel from "../ide/ExpandablePanel.jsx";
 import VideoApp from "../video/VideoApp.tsx";
-import {InterviewProvider} from "../../context/interviewContext.tsx";
+import { InterviewProvider } from "../../context/interviewContext.tsx";
+import { useState, useEffect, useRef } from 'react';
+ 
 
 function dashboard() {
+    const [messages, setMessages] = useState([]);
+    const [input, setInput] = useState("");
+
+    const handleSend = () => {
+        if (!input.trim()) return;
+        setMessages(prev => [...prev, { text: input, self: true }]);
+        setInput("");
+    };
+
+    const messagesEndRef = useRef(null);
+
+useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+}, [messages]);
+
     return (
         <>
             <div className="parent">
@@ -28,17 +45,45 @@ function dashboard() {
                     </InterviewProvider>
                 </div>
 
-                <div className="section-content div5" id="messages-container">
-                    <div className="card">
-                        <div className="chat-window">
-                            <ul className="message-list"></ul>
-                        </div>
-                        <div className="chat-input">
-                            <input id="textarea" type="text" className="message-input" placeholder="Type your message here"/>
-                            <button className="send-button">Send</button>
-                        </div>
-                    </div>
-                </div>
+               <div className="section-content div5" id="messages-container">
+  <div className="card" style={{ height: "100%", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div className="chat-window" style={{ flex: 1, overflowY: "auto", padding: "8px" }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                {messages.map((msg, i) => (
+                    <li key={i} style={{
+                        marginBottom: "8px",
+                        textAlign: msg.self ? "right" : "left"
+                    }}>
+                        <span style={{
+                            display: "inline-block",
+                            padding: "6px 12px",
+                            borderRadius: "12px",
+                            background: msg.self ? "#6c63ff" : "#f0f0f0",
+                            color: msg.self ? "white" : "black",
+                            fontSize: "13px",
+                            maxWidth: "80%"
+                        }}>
+                            {msg.text}
+                        </span>
+                    </li>
+                ))}
+                <div ref={messagesEndRef} />
+            </ul>
+        </div>
+        <div className="chat-input" style={{ display: "flex", gap: "8px", padding: "8px" }}>
+            <input
+                type="text"
+                className="message-input"
+                placeholder="Type your message here"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                style={{ flex: 1 }}
+            />
+            <button className="send-button" onClick={handleSend}>Send</button>
+        </div>
+    </div>
+</div>
 
                 <div className="expandable-problem">
                     <ExpandablePanel label="Problem:" overlayClass="overlay-problem">
@@ -50,11 +95,12 @@ function dashboard() {
                     <IdePanel />
                 </div>
 
-                <div className="div6" id="bottom-nav-bar" >
+                <div className="div6" id="bottom-nav-bar">
                     <Footer/>
                 </div>
             </div>
         </>
     );
 }
+
 export default dashboard;

@@ -14,10 +14,11 @@ body {
 }
 
 #root {
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
     height: 100%;
+    overflow-x: auto;
 }
-
 
 /*Layout grid*/
 .parent {
@@ -44,7 +45,7 @@ body {
 .div2 { grid-area: 2 / 1 / 3 / 2;}
 .div3 { grid-area: 2 / 1 / 6 / 2;}
 .div4 { grid-area: 6 / 1 / 7 / 2; align-self: start; z-index: 3;}
-.div5 { grid-area: 6 / 1 / 10 / 2; display: flex; flex-direction: column; padding: 0; overflow: hidden;}
+.div5 { grid-area: 7 / 1 / 10 / 2; display: flex; flex-direction: column; padding: 0; overflow: hidden;}
 .div6 { grid-area: 10 / 1 / 11 / 4; background-color:#A79A8A; margin: 0 -8px;}
 
 /* Expandable panel wrappers */
@@ -370,7 +371,7 @@ body {
     margin: 0;
 }
 
-.chat-window {flex: 1; overflow-y: auto; min-height: 0;}
+.chat-window {flex: 1; overflow-y: auto; min-height: 0; padding: 8px;}
 .message-list {list-style: none; margin: 0; padding: 0; color: black;}
 .chat-input {flex: none; display: flex; align-items: start; padding: 10px; border-top: 2px solid #ccc; color: black;}
 .message-input {border: none; outline: none; padding: 5px; font-size: 14px; background: #fff; color: black;}

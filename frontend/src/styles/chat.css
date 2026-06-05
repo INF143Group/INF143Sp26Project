@@ -251,4 +251,5 @@
   width: 100%;
   background: #f0ebe3;
   font-family: sans-serif;
+  min-width: 700px;
 }

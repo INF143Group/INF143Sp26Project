@@ -1,17 +1,55 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "../../styles/Login.css";
 import NavBar from "../layout/nav-bar";
 import Footer from "../layout/footer.jsx";
+import { supabase } from "../../lib/supabase";
+
+const ROOT = "http://localhost:8080/";  
 
 function Help() {
   const [problem, setProblem] = useState("");
+
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setToken(session?.access_token ?? null);
+    });
+  }, []);
+
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    console.log("Problem submitted:", problem);
-    alert("Your message has been submitted!");
-    setProblem("");
+  async function sendHelpEmail(){
+    console.log("Preparing to send help email to " + 'temp@email.com' + " with message: " + problem);
+    const resp = await fetch(ROOT + "api/mail/send-help-email", {
+        method: "POST",
+        body: JSON.stringify({fromEmail: 'temp@email.com', message: problem}),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        }
+    })
+
+    if (!resp.ok) {
+        throw new Error("Failed to send email");
+    }
+
+    let respJson = await resp.json();
+    if (respJson.success===false){
+        throw new Error("Failed to send email");
+    }
+    return respJson;
+  }
+
+  const handleSubmit = async () => {
+    let resp = await sendHelpEmail();
+    if (resp.success === true) {
+      alert("Your message has been sent! We will get back to you as soon as possible.");
+      setProblem("");
+    } else {
+      console.error("There was an error sending your message. Please try again later.", resp);
+    }
   };
 
   return (

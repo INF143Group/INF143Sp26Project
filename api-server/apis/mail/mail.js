@@ -95,7 +95,76 @@ async function parseBody(req) {
     })
 }
 
-async function processEmailRequest(req, res) {
+async function sendHelpEmail(fromEmail, message) {
+    console.log("Preparing to send email to " + fromEmail + " with message: " + message);
+    if (!fromEmail || !message) {
+        console.error("Missing required parameters for sending help email.");
+        return false;
+    }
+
+    try {
+        const res = await transporter.sendMail({
+            from: `inf143sp26group@gmail.com`,
+            to: 'inf143sp26group@gmail.com',
+            subject: "New Interview from PivotStack",
+            html: "<p>New help request from <b>" + fromEmail + "</b> with the following message: <br><br>" + message + "</p>",
+        });
+        if (res.rejected.length > 0) {
+            console.warn("Some recipients were rejected:", res.rejected);
+            return false;
+        }
+    } catch (err) {
+        switch (err.code) {
+            case "ECONNECTION":
+            case "ETIMEDOUT":
+            console.error("Network error - retry later:", err.message);
+            break;
+            case "EAUTH":
+            console.error("Authentication failed:", err.message);
+            break;
+            case "EENVELOPE":
+            console.error("Invalid recipients:", err.rejected);
+            break;
+            default:
+            console.error("Send failed:", err.message);
+        }
+        return false;
+    }
+
+    console.log("Email send success");
+    return true;
+}
+
+async function processHelpEmailRequest(req, res) {
+    let body = await parseBody(req);
+
+console.log("Parsed body:", body);
+
+    if (!body) {
+        res.status(401).send({
+            success: false,
+            message: "Unauthorized: Message Body Unable to be parsed."
+        });
+        return;
+    };
+
+    let response = await sendHelpEmail(body.fromEmail, body.message);
+
+    if (response==false){
+        res.status(401).send({
+            success: false,
+            message: "Could not send email, please try again later."
+        });
+        return;
+    };
+
+    res.status(200).send({
+        success: true,
+        message: "Email sent successfully."
+    })
+}
+
+async function processInterviewEmailRequest(req, res) {
     let body = await parseBody(req);
     if (!body) {
         res.status(401).send({
@@ -121,4 +190,5 @@ async function processEmailRequest(req, res) {
     })
 }
 
-export default{processEmailRequest};
+
+export default{processInterviewEmailRequest, processHelpEmailRequest};

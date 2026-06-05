@@ -22,7 +22,10 @@ app.route("/api/calendar")
         calendar.catchNewEventRequest(req, res);
     });
 app.route("/api/mail/send-interview-email").post(async (req, res) => {
-    mail.processEmailRequest(req, res);
+    mail.processInterviewEmailRequest(req, res);
+});
+app.route("/api/mail/send-help-email").post(async (req, res) => {
+    mail.processHelpEmailRequest(req, res);
 });
 
 const server = app.listen(8080, () => {

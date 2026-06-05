@@ -5,6 +5,7 @@ import EventAddPopup from "./EventAddPopup.jsx";
 import  FullCalendar  from "@fullcalendar/react";
 import  dayGridPlugin  from "@fullcalendar/daygrid";
 import  interactionPlugin   from "@fullcalendar/interaction";
+import { supabase } from "../../lib/supabase.js";
 
 import "../../styles/Calendar.css";
 import Footer from "../layout/footer.jsx";
@@ -17,6 +18,7 @@ let calendarRef = null;
 let eventPopupRef = null;
 let defaultDate, setDefaultDate = null;
 let isSchedulerOpen, setIsSchedulerOpen = null;
+let token = await supabase.auth.getSession().then(({ data: { session } }) => session?.access_token);
 
 function displayAddEventDiv(e){
     console.log(e);
@@ -28,7 +30,8 @@ async function uploadEvent(dateObj){
         method: "POST",
         body: JSON.stringify(dateObj),
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
         }
     });
 

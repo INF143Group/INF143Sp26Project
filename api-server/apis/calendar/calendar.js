@@ -1,4 +1,4 @@
-import {getConnection} from "../../utils.js"
+import {getConnection, getConnectionWithToken} from "../../utils.js"
 
 let dummyEvents = [
     {
@@ -72,7 +72,7 @@ async function getEventsJsonForUser(userId){
         }
     }
 }
-async function uploadEvent(eventData){
+async function uploadEvent(token, eventData){
     if (!eventData){
         return {
             success: false,
@@ -97,7 +97,7 @@ async function uploadEvent(eventData){
         };
     }
 
-    const {error} = await (await getConnection())
+    const {error} = await (await getConnectionWithToken(token))
         .from("events")
         .insert({
             interviewee_id: userIds.intervieweeId,
@@ -131,13 +131,13 @@ async function validateUsersAndReturnUserIds(interviewerEmail, userId){
         return null;
     }
         if (error || !data){
-        console.error("Failed to validate interviewer email: ", error?.message || "Unknown error");
+        console.error("Failed to validate interviewee email: ", error?.message || "Unknown error");
         return null;
     }
 
     return {
-        interviewerId: data.user_id,
-        intervieweeId: userId
+        intervieweeId: data.user_id,
+        interviewerId: userId
     };
 
 }
@@ -150,7 +150,16 @@ async function catchNewEventRequest(req, res){
     req.on('end', async () => {
         parsedBody = JSON.parse(Buffer.concat(body).toString());
 
-        let resp = await uploadEvent(parsedBody);
+        let auth = req.headers.authorization;
+        if (auth?.split(" ").length !== 2 || auth.split(" ")[0] !== "Bearer"){
+            res.status(401).send({
+                success: false,
+                message: "Unauthorized: Invalid or missing token"
+            });
+        }
+        
+        let token = auth.split(" ")[1]
+        let resp = await uploadEvent(token, parsedBody);
         if (resp.success){
             console.log("Event uploaded successfully");
             res.status(200);

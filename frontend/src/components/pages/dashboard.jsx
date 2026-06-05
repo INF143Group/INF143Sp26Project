@@ -1,21 +1,14 @@
- 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../styles/GridLayout.css";
 import NavBar from "../layout/nav-bar.jsx";
 import Footer from "../layout/footer.jsx";
 import ProblemDisplay from './ProblemDisplay.jsx';
-<<<<<<< HEAD:Components/dashboard.jsx
-import IdePanel from "./IDEPanel.jsx";
-import ExpandablePanel from "./ExpandablePanel.jsx";
-import App from "../openvidu-livekit-tutorials/application-client/openvidu-react/src/App.tsx";
-import { InterviewProvider } from "../openvidu-livekit-tutorials/application-client/openvidu-react/src/interviewContext.tsx";
-import { useState, useEffect, useRef } from 'react';
-=======
 import IdePanel from "../ide/IDEPanel.jsx";
 import ExpandablePanel from "../ide/ExpandablePanel.jsx";
 import VideoApp from "../video/VideoApp.tsx";
-import {InterviewProvider} from "../../context/interviewContext.tsx";
->>>>>>> d8fc2d739bc21a2ca949e15b4fcedd59e0a57665:frontend/src/components/pages/dashboard.jsx
+import { InterviewProvider } from "../../context/interviewContext.tsx";
+import { useState, useEffect, useRef } from 'react';
+ 
 
 function dashboard() {
     const [messages, setMessages] = useState([]);

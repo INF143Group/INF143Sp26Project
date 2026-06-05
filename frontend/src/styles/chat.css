@@ -252,3 +252,42 @@
   background: #f0ebe3;
   font-family: sans-serif;
 }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .chat-wrapper {
+    height: calc(100vh - 94px);
+  }
+
+  .chat-sidebar {
+    width: 100%;
+    border-right: none;
+  }
+
+  .chat-main {
+    width: 100%;
+  }
+
+  .chat-back-btn {
+    display: inline-flex !important;
+    font-size: 20px;
+  }
+
+  .chat-bubble {
+    max-width: 80%;
+  }
+}
+
+@media (min-width: 769px) {
+  .chat-sidebar {
+    display: flex !important;
+  }
+
+  .chat-main {
+    display: flex !important;
+  }
+
+  .chat-back-btn {
+    display: none !important;
+  }
+}

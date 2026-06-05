@@ -34,6 +34,7 @@ function Chat() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [realUser, setRealUser] = useState<any>(null);
   const [realMessages, setRealMessages] = useState<any[]>([]);
+  const [showSidebar, setShowSidebar] = useState(true); // mobile toggle
   const navigate = useNavigate();
   const currentUserId = sessionStorage.getItem("user_id");
 
@@ -53,6 +54,7 @@ function Chat() {
     setShowSearch(false);
     setSearchQuery("");
     setSearchResults([]);
+    setShowSidebar(false); // on mobile, go to chat view
     const { data } = await supabase.from("messages").select("*")
       .or(`and(sender_id.eq.${currentUserId},recipient_id.eq.${user.user_id}),and(sender_id.eq.${user.user_id},recipient_id.eq.${currentUserId})`)
       .order("message_id", { ascending: true });
@@ -79,13 +81,21 @@ function Chat() {
     setInput("");
   };
 
+  const selectMockUser = (user: typeof mockUsers[0]) => {
+    setSelectedMock(user);
+    setRealUser(null);
+    setShowSidebar(false); // on mobile, go to chat view
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
-      <div className = {"div1"} id = {"nav-bar"}>
-        <NavBar/>
+      <div className="div1" id="nav-bar">
+        <NavBar />
       </div>
+
       <div className="chat-wrapper">
-        <div className="chat-sidebar">
+        {/* SIDEBAR */}
+        <div className="chat-sidebar" style={{ display: showSidebar ? 'flex' : undefined }}>
           <div className="chat-sidebar-header">
             <span className="chat-title">Messages</span>
           </div>
@@ -94,7 +104,7 @@ function Chat() {
 
           <div className="chat-user-list">
             {realUser && (
-              <div className="chat-user-item active" onClick={() => setSelectedMock(null as any)}>
+              <div className="chat-user-item active" onClick={() => { setSelectedMock(null as any); setShowSidebar(false); }}>
                 <div className="chat-avatar" style={{ background: "#6c63ff" }}>
                   {realUser.username.slice(0, 2).toUpperCase()}
                 </div>
@@ -107,7 +117,7 @@ function Chat() {
 
             {mockUsers.map((user) => (
               <div key={user.id} className={`chat-user-item ${selectedMock?.id === user.id ? "active" : ""}`}
-                onClick={() => { setSelectedMock(user); setRealUser(null); }}>
+                onClick={() => selectMockUser(user)}>
                 <div className="chat-avatar" style={{ background: user.color }}>{user.initials}</div>
                 <div className="chat-user-info">
                   <span className="chat-user-name">{user.name}</span>
@@ -154,8 +164,17 @@ function Chat() {
           </div>
         </div>
 
-        <div className="chat-main">
+        {/* MAIN CHAT */}
+        <div className="chat-main" style={{ display: showSidebar ? 'none' : 'flex' }}>
           <div className="chat-main-header">
+            {/* Back button for mobile */}
+            <button
+              className="chat-icon-btn chat-back-btn"
+              onClick={() => setShowSidebar(true)}
+              style={{ marginRight: "4px" }}
+            >
+              ←
+            </button>
             <div className="chat-avatar" style={{ background: realUser ? "#6c63ff" : selectedMock?.color }}>
               {realUser ? realUser.username.slice(0, 2).toUpperCase() : selectedMock?.initials}
             </div>
@@ -209,8 +228,9 @@ function Chat() {
           </div>
         </div>
       </div>
-      <div className="div6" id="bottom-nav-bar" >
-        <Footer/>
+
+      <div className="div6" id="bottom-nav-bar">
+        <Footer />
       </div>
     </div>
   );

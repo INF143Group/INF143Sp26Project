@@ -14,11 +14,11 @@ body {
 }
 
 #root {
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
     height: 100%;
     overflow-x: auto;
 }
-
 
 /*Layout grid*/
 .parent {

@@ -1,9 +1,10 @@
 import {createRequire} from 'module';
 import { createClient } from '@supabase/supabase-js'
 import 'dotenv/config'
-import calendar from './apis/calendar/calendar.js';
 import {ExpressPeerServer} from 'peer';
 import {validateToken} from "./utils.js";
+import calendar from './apis/calendar/calendar.js';
+import mail from "./apis/mail/mail.js";
 
 
 const require = createRequire(import.meta.url);
@@ -20,6 +21,9 @@ app.route("/api/calendar")
     .post((req, res) => {
         calendar.catchNewEventRequest(req, res);
     });
+app.route("/api/mail/send-email").post(async (req, res) => {
+    mail.processEmailRequest(req, res);
+});
 
 const server = app.listen(8080, () => {
     console.log("Server is running on port 8080");

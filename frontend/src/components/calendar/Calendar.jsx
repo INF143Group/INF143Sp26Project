@@ -25,6 +25,27 @@ function displayAddEventDiv(e){
     setDefaultDate(e.dateStr);
     setIsSchedulerOpen(true);
 }
+async function sendEmail(toEmail, otherPerson, date, time){
+    console.log("Preparing to send email to " + toEmail + " about interview with " + otherPerson + " on " + date + " at " + time);
+    const resp = await fetch(ROOT + "api/mail/send-email", {
+        method: "POST",
+        body: JSON.stringify({toEmail, otherPerson, date, time}),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        }
+    })
+
+    if (!resp.ok) {
+        throw new Error("Failed to send email");
+    }
+
+    let respJson = await resp.json();
+    if (respJson.success===false){
+        throw new Error("Failed to send email");
+    }
+    return respJson;
+}
 async function uploadEvent(dateObj){
     const resp = await fetch(ROOT + "api/calendar", {
         method: "POST",
@@ -61,18 +82,23 @@ function submitAndHideDiv(dateObj){
         if (status.success===false){
             toast.error("Failed to schedule event.");
         } else {
-            // calendarRef.current.getApi().addEvent({
-            //     title: "Interview with " + dateObj.interviewerName,
-            //     start: dateObj.date + " " + dateObj.time,
-            // })
             calendarRef.current.getApi().refetchEvents();
             toast.success(() => AddSubtext(dateObj), {
                 className: '!w-fit !max-w-none',
             });
+
+            sendEmail(dateObj.interviewerEmail, dateObj.interviewerName, dateObj.date, dateObj.time).then((emailStatus) => {
+                if (emailStatus.success===false){
+                    toast.error("Failed to send email.");
+                } else{
+                    toast.success("Email sent to the other participant.");
+                }
+            })
         }
     }).catch(() => {
         toast.error("Failed to schedule event.");
     });
+
     setIsSchedulerOpen(false);
 }
 function AddSubtext(dateObj){

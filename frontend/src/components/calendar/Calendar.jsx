@@ -192,7 +192,8 @@ export default function Calendar(){
                             text: 'add an event today',
                             click: () => {
                                 let date = new Date(Date.now());
-                                let dateStr = date.getFullYear() + "-" + String((date.getMonth()+1)).padStart(2, '0') + "-" + date.getDate();
+                                let dateStr = date.getFullYear() + "-" + String((date.getMonth()+1)).padStart(2, '0') + "-" + String(date.getDate()).padStart(2, '0');
+                                console.log(date, dateStr);
                                 displayAddEventDiv({dateStr: dateStr})
                             }
                         }

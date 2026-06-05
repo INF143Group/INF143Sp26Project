@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase.js";
 import "../../styles/chat.css";
@@ -35,65 +35,53 @@ function Chat() {
   const [realUser, setRealUser] = useState<any>(null);
   const [realMessages, setRealMessages] = useState<any[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const realUserRef = useRef<any>(null);
+  const currentUserIdRef = useRef<string | null>(null);
   const navigate = useNavigate();
 
-  // Get the real auth user ID from Supabase session
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      setCurrentUserId(data.session?.user.id ?? null);
+      const id = data.session?.user.id ?? null;
+      setCurrentUserId(id);
+      currentUserIdRef.current = id;
     });
   }, []);
 
-  // Real-time subscription + initial load when conversation changes
   useEffect(() => {
     if (!realUser || !currentUserId) return;
+    realUserRef.current = realUser;
 
-    // Load existing messages ordered by sent_at
-    loadMessages(realUser);
+    loadMessages(realUser, currentUserId);
 
     const channel = supabase
       .channel(`messages-${currentUserId}-${realUser.user_id}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-        },
-        (payload) => {
-          const msg = payload.new;
-          const isRelevant =
-            (msg.sender_id === realUser.user_id && msg.recipient_id === currentUserId) ||
-            (msg.sender_id === currentUserId && msg.recipient_id === realUser.user_id);
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload) => {
+        const msg = payload.new;
+        const uid = currentUserIdRef.current;
+        const ru = realUserRef.current;
+        const isRelevant =
+          (msg.sender_id === ru?.user_id && msg.recipient_id === uid) ||
+          (msg.sender_id === uid && msg.recipient_id === ru?.user_id);
 
-          if (isRelevant) {
-            setRealMessages((prev) => {
-              // Avoid duplicates from optimistic update
-              const alreadyExists = prev.some(
-                (m) => m.message_id && m.message_id === msg.message_id
-              );
-              if (alreadyExists) return prev;
-              // Insert in chronological order
-              const updated = [...prev, msg];
-              return updated.sort((a, b) =>
-                new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
-              );
-            });
-          }
+        if (isRelevant) {
+          setRealMessages((prev) => {
+            if (prev.some((m) => m.message_id === msg.message_id)) return prev;
+            return [...prev, msg].sort((a, b) =>
+              new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
+            );
+          });
         }
-      )
+      })
       .subscribe();
 
-    return () => supabase.removeChannel(channel);
+    return () => { supabase.removeChannel(channel); };
   }, [realUser?.user_id, currentUserId]);
 
-  const loadMessages = async (user: any) => {
+  const loadMessages = async (user: any, userId: string) => {
     const { data } = await supabase
       .from("messages")
       .select("*")
-      .or(
-        `and(sender_id.eq.${currentUserId},recipient_id.eq.${user.user_id}),and(sender_id.eq.${user.user_id},recipient_id.eq.${currentUserId})`
-      )
+      .or(`and(sender_id.eq.${userId},recipient_id.eq.${user.user_id}),and(sender_id.eq.${user.user_id},recipient_id.eq.${userId})`)
       .order("sent_at", { ascending: true });
     setRealMessages(data || []);
   };
@@ -101,68 +89,60 @@ function Chat() {
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (!query.trim()) { setSearchResults([]); return; }
-    const { data } = await supabase
-      .from("users")
+    const { data } = await supabase.from("users")
       .select("user_id, username, display_name")
       .ilike("username", `%${query}%`)
       .limit(8);
     setSearchResults(data || []);
   };
 
-  const handleSelectRealUser = async (user: any) => {
+  const handleSelectRealUser = (user: any) => {
     setRealUser(user);
+    realUserRef.current = user;
     setSelectedMock(null as any);
     setShowSearch(false);
     setSearchQuery("");
     setSearchResults([]);
+    setRealMessages([]);
   };
 
   const handleSendReal = async () => {
     if (!input.trim() || !realUser || !currentUserId) return;
-    const optimistic = {
-      sender_id: currentUserId,
-      recipient_id: realUser.user_id,
-      subject: "chat",
-      body: input,
-      status: "sent",
-      sent_at: new Date().toISOString(),
-    };
-    setRealMessages((prev) => [...prev, optimistic]);
+    const text = input;
     setInput("");
-    await supabase.from("messages").insert([{
+    const { data } = await supabase.from("messages").insert([{
       sender_id: currentUserId,
       recipient_id: realUser.user_id,
       subject: "chat",
-      body: input,
+      body: text,
       status: "sent",
-    }]);
+    }]).select().single();
+    if (data) {
+      setRealMessages((prev) => {
+        if (prev.some((m) => m.message_id === data.message_id)) return prev;
+        return [...prev, data].sort((a, b) =>
+          new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
+        );
+      });
+    }
   };
 
   const handleSendMock = () => {
     if (!input.trim()) return;
-    const newMsg = {
-      from: "You",
-      text: input,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      self: true,
-    };
+    const newMsg = { from: "You", text: input, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), self: true };
     setMessages((prev) => ({ ...prev, [selectedMock.id]: [...(prev[selectedMock.id] || []), newMsg] }));
     setInput("");
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minWidth: '700px' }}>
-      <div className="div1" id="nav-bar">
-        <NavBar />
-      </div>
+      <div className="div1" id="nav-bar"><NavBar /></div>
       <div className="chat-wrapper">
         <div className="chat-sidebar">
           <div className="chat-sidebar-header">
             <span className="chat-title">Messages</span>
           </div>
-
           <input className="chat-search" type="text" placeholder="Search conversations..." />
-
           <div className="chat-user-list">
             {realUser && (
               <div className="chat-user-item active" onClick={() => setSelectedMock(null as any)}>
@@ -175,13 +155,9 @@ function Chat() {
                 </div>
               </div>
             )}
-
             {mockUsers.map((user) => (
-              <div
-                key={user.id}
-                className={`chat-user-item ${selectedMock?.id === user.id ? "active" : ""}`}
-                onClick={() => { setSelectedMock(user); setRealUser(null); }}
-              >
+              <div key={user.id} className={`chat-user-item ${selectedMock?.id === user.id ? "active" : ""}`}
+                onClick={() => { setSelectedMock(user); setRealUser(null); }}>
                 <div className="chat-avatar" style={{ background: user.color }}>{user.initials}</div>
                 <div className="chat-user-info">
                   <span className="chat-user-name">{user.name}</span>
@@ -191,22 +167,15 @@ function Chat() {
               </div>
             ))}
           </div>
-
           <div style={{ padding: "12px 16px", position: "relative", zIndex: 100 }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button className="chat-icon-btn" onClick={() => setShowSearch(!showSearch)} style={{ padding: 0 }}>
                 <img src={addIcon} alt="add" style={{ width: "28px", height: "28px" }} />
               </button>
               {showSearch && (
-                <input
-                  className="chat-search"
-                  type="text"
-                  placeholder="Search the person..."
-                  value={searchQuery}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  autoFocus
-                  style={{ background: "rgba(255,255,255,0.5)", backdropFilter: "blur(4px)", margin: 0, flex: 1 }}
-                />
+                <input className="chat-search" type="text" placeholder="Search the person..."
+                  value={searchQuery} onChange={(e) => handleSearch(e.target.value)} autoFocus
+                  style={{ background: "rgba(255,255,255,0.5)", backdropFilter: "blur(4px)", margin: 0, flex: 1 }} />
               )}
             </div>
             {searchResults.length > 0 && (
@@ -217,8 +186,7 @@ function Chat() {
                       {user.username.slice(0, 2).toUpperCase()}
                     </div>
                     <div>
-                      <span className="chat-user-name">{user.display_name || user.username}</span>
-                      <br />
+                      <span className="chat-user-name">{user.display_name || user.username}</span><br />
                       <span className="chat-user-preview">@{user.username}</span>
                     </div>
                   </div>
@@ -242,7 +210,7 @@ function Chat() {
           <div className="chat-messages">
             {realUser ? (
               realMessages.map((msg, i) => (
-                <div key={i} className={`chat-message ${msg.sender_id === currentUserId ? "self" : "other"}`}>
+                <div key={msg.message_id || i} className={`chat-message ${msg.sender_id === currentUserId ? "self" : "other"}`}>
                   {msg.sender_id !== currentUserId && (
                     <div className="chat-avatar small" style={{ background: "#6c63ff" }}>
                       {realUser.username.slice(0, 2).toUpperCase()}
@@ -276,23 +244,17 @@ function Chat() {
           </div>
 
           <div className="chat-input-area">
-            <input
-              className="chat-input-main"
-              type="text"
+            <input className="chat-input-main" type="text"
               placeholder={`Message ${realUser ? realUser.username : selectedMock?.name}...`}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && (realUser ? handleSendReal() : handleSendMock())}
-            />
+              value={input} onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && (realUser ? handleSendReal() : handleSendMock())} />
             <button className="chat-send-btn" onClick={realUser ? handleSendReal : handleSendMock}>
               <img src={sendIcon} alt="send" style={{ width: "20px", height: "20px" }} />
             </button>
           </div>
         </div>
       </div>
-      <div className="div6" id="bottom-nav-bar">
-        <Footer />
-      </div>
+      <div className="div6" id="bottom-nav-bar"><Footer /></div>
     </div>
   );
 }

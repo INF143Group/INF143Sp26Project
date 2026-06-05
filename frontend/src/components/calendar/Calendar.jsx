@@ -98,12 +98,21 @@ async function getEvents(){
         return [];
     }
 
-    const resp = await fetch(ROOT + "api/calendar?userId="+getUserId());
+
+    const resp = await fetch(ROOT + "api/calendar?userId="+getUserId(),
+    {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
     if (!resp.ok) {
         console.error("Failed to fetch events");
         return [];
     }
     const respJson = await resp.json();
+    console.log("respJson: ", respJson);
     if (respJson.success===false){
         console.error("Failed to parse resp json");
         return [];
@@ -137,6 +146,7 @@ async function getEvents(){
         })
     
     });
+    console.log("return events: ", returnEvents);
     return returnEvents;
 }
 

@@ -1,4 +1,4 @@
-import {getConnection, getConnectionWithToken} from "../../utils.js"
+import {getConnection, validateToken, getConnectionWithToken} from "../../utils.js"
 
 let dummyEvents = [
     {
@@ -26,14 +26,19 @@ let dummyEvents = [
         lengthMinutes: 60
     }
 ]
-async function getEventsJsonForUser(userId){
+async function getEventsJsonForUser(token, userId){
     if (!userId)
-    return {
-        success: false,
-        message: "no user ID"
-    }
+        return {
+            success: false,
+            message: "no user ID"
+        }
+    if (!token)
+        return {
+            success: false,
+            message: "no token"
+        }
 
-    const { data: eventsData, error } = await (await getConnection())
+    const { data: eventsData, error } = await (await getConnectionWithToken(token))
     .from("events")
     .select(`
         event_id, event_at, minute_length, notes,
@@ -41,6 +46,8 @@ async function getEventsJsonForUser(userId){
         interviewee:users!interviewee_id(user_id, email, display_name)
     `)
     .or(`interviewer_id.eq.${userId},interviewee_id.eq.${userId}`);
+    
+    console.log("Queried events for user ", userId, ": ", eventsData, " with error: ", error);
         
     if (error || !eventsData){
         return {
@@ -58,6 +65,7 @@ async function getEventsJsonForUser(userId){
             }
         }
     }
+
 
     // Find the primary user object from the first event match to populate top-level fields
     const primaryUser = eventsData[0].interviewer.id === userId 
@@ -152,13 +160,19 @@ async function catchNewEventRequest(req, res){
 
         let auth = req.headers.authorization;
         if (auth?.split(" ").length !== 2 || auth.split(" ")[0] !== "Bearer"){
+            
+        }
+        
+        let token = valdiateToken(req);
+        if (!token){
             res.status(401).send({
                 success: false,
                 message: "Unauthorized: Invalid or missing token"
             });
+            return;
         }
-        
-        let token = auth.split(" ")[1]
+
+
         let resp = await uploadEvent(token, parsedBody);
         if (resp.success){
             console.log("Event uploaded successfully");

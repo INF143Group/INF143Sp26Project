@@ -19,6 +19,15 @@ export async function getConnectionWithToken(token){
     )
 }
 
+export function validateToken(req){
+    let auth = req.headers.authorization;
+        if (auth?.split(" ").length !== 2 || auth.split(" ")[0] !== "Bearer"){
+            return null;
+        }
+        let token = auth.split(" ")[1]
+        return token;
+}
+
 export async function getUserId(){
     return sessionStorage.getItem("userId");
 }

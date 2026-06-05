@@ -246,11 +246,13 @@
 }
 
 .chat-wrapper {
+.chat-wrapper {
   display: flex;
   height: calc(100vh - 94px);
   width: 100%;
   background: #f0ebe3;
   font-family: sans-serif;
+  min-width: 700px;  /* just add this line */
 }
 
 /* Mobile responsive */

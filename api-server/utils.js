@@ -1,9 +1,20 @@
 import { createClient } from '@supabase/supabase-js'
 import 'dotenv/config'
 
+
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+const supabaseUrl = isDevelopment 
+    ? process.env.VITE_SUPABASE_URL 
+    : process.env.SUPABASE_URL;
+
+const supabaseKey = isDevelopment
+    ? process.env.VITE_SUPABASE_ANON_KEY
+    : process.env.SUPABASE_ANON_KEY;
+
 const supabase = createClient(
-    process.env.VITE_SUPABASE_URL,
-    process.env.VITE_SUPABASE_ANON_KEY
+    supabaseUrl,
+    supabaseKey
 )
 
 export async function getConnection(){
@@ -11,8 +22,8 @@ export async function getConnection(){
 }
 export async function getConnectionWithToken(token){
     return createClient(
-        process.env.VITE_SUPABASE_URL,
-        process.env.VITE_SUPABASE_ANON_KEY,
+        supabaseUrl,
+        supabaseKey,
         {global: {headers: {
                 Authorization: "Bearer " + token
         }}}

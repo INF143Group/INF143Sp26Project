@@ -46,8 +46,6 @@ async function getEventsJsonForUser(token, userId){
         interviewee:users!interviewee_id(user_id, email, display_name)
     `)
     .or(`interviewer_id.eq.${userId},interviewee_id.eq.${userId}`);
-    
-    console.log("Queried events for user ", userId, ": ", eventsData, " with error: ", error);
         
     if (error || !eventsData){
         return {

@@ -1,89 +1,96 @@
+import './styles/App.css';
 import NavBar from "./components/layout/nav-bar.jsx";
 import Footer from "./components/layout/footer.jsx";
-import Nav from 'react-bootstrap/Nav';
+import {useNavigate} from "react-router-dom";
 
 function App() {
+    const navigate = useNavigate();
+
     return (
-        <div style={{ width: "100vw", height: "100vh", overflow: "hidden", background: '#f5f0eb', display: 'flex', flexDirection: 'column',  overflowX: 'hidden'}}>
-            <style>{`
-             #main-scroll::-webkit-scrollbar { display: none; }
-             #main-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-             `}</style>
-
-            <div className="div1" id="nav-bar">
-                <NavBar/>
-            </div>
-
-            <main
-                id="main-scroll"
-                style = {{
-                    flex: 1,
-                    overflowY: "auto",
-                    overflowX: "hidden",
-                }}
-            >
-                <div className="text-center mb-5 mt-4" style = {{background:'#f5f0eb'}}>
-                    <h1 className="display-4 fw-bold text-dark mb-3">Welcome to PivotStack!</h1>
-                    <p className="lead text-muted fs-5">Level up your coding game!</p>
+        <div className="ps-wrap">
+            <main className="ps-main" id="main-scroll">
+                <div className={"div1"} id={"nav-bar"}>
+                    <NavBar/>
+                </div>
+                <div className="hero">
+                    <div className="hero-eyebrow">PivotStack</div>
+                    <h1>Practice coding interviews the way they actually happen</h1>
+                    <p className="hero-sub">Live video calls, a shared code editor, and a library of curated problems in
+                        one place. Practice with a peer, get feedback in real time.</p>
+                    <div className="hero-actions">
+                        <button className="btn-primary" onClick={() => navigate('/create')}>Create an account</button>
+                        <button className="btn-ghost" onClick={() => navigate('/resources')}>Browse resources</button>
+                    </div>
                 </div>
 
-                <div className="container px-4" style = {{background:'#f5f0eb'}}>
+                <hr className="section-divider"/>
 
-                    <div
-                        className="p-5 mb-5 bg-gradient rounded-4 shadow-sm text-white d-flex justify-content-between align-items-center flex-wrap gap-4"
-                        style= {{backgroundColor: "#1e293b"}}
-                    >
-                        <div>
-                            <h2 className="fw-bold mb-1">Ready to start?</h2>
-                            <p className="text-white-50 m-0">Try a code problem today!</p>
+                <div className="section">
+                    <div className="stat-row">
+                        <div className="stat-card">
+                            <div className="stat-num">200+</div>
+                            <div className="stat-lbl">Curated problems</div>
                         </div>
-                        <div className="btn btn-light btn-lg px-4 fw-semibold text-dark shadow-sm">
-                            <Nav.Link href="/create">Sign Up Now!</Nav.Link>
+                        <div className="stat-card">
+                            <div className="stat-num">3</div>
+                            <div className="stat-lbl">Difficulty levels</div>
                         </div>
-                    </div>
-
-                    <div className="p-5 mb-5 bg-white border border-light rounded-4 shadow-sm">
-                        <div className="row align-items-center">
-                            <div className="col-lg-6">
-                                <h2 className="fw-bold text-dark mb-3">Live Coding Interviews</h2>
-                                <p className="text-muted fs-5 leading-relaxed">
-                                    With live video conferencing, messaging and scheduling capability, all designed so you can succeed. Additionally, we provide a library of curated, real-world challenges to help you practice coding and take your coding abilities to the next level!
-                                </p>
-                            </div>
+                        <div className="stat-card">
+                            <div className="stat-num">Live</div>
+                            <div className="stat-lbl">Video + audio</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="stat-num">Free</div>
+                            <div className="stat-lbl">To get started</div>
                         </div>
                     </div>
 
-                    <div className="row g-4 mb-4">
-                        <div className="col-md-6">
-                            <div className="bg-white border border-light p-4 h-100 rounded-4 shadow-sm d-flex flex-column justify-content-between">
-                                <div>
-                                    <div className="text-primary mb-3">
-                                        <i className="bi bi-people-fill fs-3"></i>
-                                    </div>
-                                    <h2 className="fw-bold text-dark mb-2">Community Support</h2>
-                                    <p className="text-muted m-0">
-                                        Support for multiple languages and collaborative problem solving with thousands of developers.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="section-label">How it works</div>
+                    <h2>Everything you need in one session</h2>
+                    <p className="section-body">Schedule a session, join a room with your partner, pick a problem, and code
+                        together. The interviewer can watch your editor live while you talk through your approach on video.</p>
 
-                        <div className="col-md-6">
-                            <div className="bg-white border border-light p-4 h-100 rounded-4 shadow-sm d-flex flex-column justify-content-between">
-                                <div>
-                                    <div className="text-primary mb-3">
-                                        <i className="bi bi-book-half fs-3"></i>
-                                    </div>
-                                    <h2 className="fw-bold text-dark mb-2">Resources</h2>
-                                    <p className="text-muted m-0">
-                                        Learn from professionals in the industry with tailored documentation, video breakdowns, and guides.
-                                    </p>
-                                </div>
-                            </div>
+                    <div className="feature-grid">
+                        <div className="feature-cell">
+                            <div className="feature-icon">🎥</div>
+                            <div className="feature-title">Live video rooms</div>
+                            <div className="feature-desc">Join a private room with your interview partner. Camera and
+                                microphone work directly in the browser, no downloads required.</div>
+                        </div>
+                        <div className="feature-cell">
+                            <div className="feature-title">Shared code editor</div>
+                            <div className="feature-desc">Both participants see edits in real time. Supports multiple
+                                languages with syntax highlighting and run-in-browser execution.</div>
+                        </div>
+                        <div className="feature-cell">
+                            <div className="feature-title">Curated problem library</div>
+                            <div className="feature-desc">Problems organized by difficulty and topic. Each problem loads
+                                directly into the session so there's no context switching.</div>
+                        </div>
+                        <div className="feature-cell">
+                            <div className="feature-title">Session scheduling</div>
+                            <div className="feature-desc">Book sessions with partners ahead of time. Your calendar shows
+                                upcoming interviews and past sessions in one view.</div>
+                        </div>
+                        <div className="feature-cell">
+                            <div className="feature-title">In-session chat</div>
+                            <div className="feature-desc">Drop links, paste code snippets, or leave notes for your partner
+                                during the call without breaking your flow.</div>
+                        </div>
+                        <div className="feature-cell">
+                            <div className="feature-title">Learning resources</div>
+                            <div className="feature-desc">Guides and references curated by people who have been through the
+                                process. Linked directly to related problems.</div>
                         </div>
                     </div>
                 </div>
-                <div className="div6" id="bottom-nav-bar" >
+
+                <div className="cta-band">
+                    <h2>Ready to start practicing?</h2>
+                    <p>Create an account in under a minute. No credit card needed.</p>
+                    <button className="btn-primary" onClick={() => navigate('/create')}>Create a free account</button>
+                </div>
+                <div className="div6" id="bottom-nav-bar">
                     <Footer/>
                 </div>
             </main>

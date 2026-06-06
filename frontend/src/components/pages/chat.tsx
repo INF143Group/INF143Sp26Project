@@ -68,12 +68,11 @@ function Chat() {
           (msg.sender_id === ru?.user_id && msg.recipient_id === uid) ||
           (msg.sender_id === uid && msg.recipient_id === ru?.user_id);
 
-        if (isRelevant) {
-          setRealMessages((prev) => {
-            if (prev.some((m) => m.message_id === msg.message_id)) return prev;
-            return [...prev, msg];
-          });
-        }
+   
+          if (isRelevant) {
+              loadMessages(realUserRef.current, currentUserIdRef.current!);
+            }
+        
       })
       .subscribe();
 

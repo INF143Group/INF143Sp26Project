@@ -113,19 +113,14 @@ function Chat() {
     if (!input.trim() || !realUser || !currentUserId) return;
     const text = input;
     setInput("");
-    const { data } = await supabase.from("messages").insert([{
+    await supabase.from("messages").insert([{
       sender_id: currentUserId,
       recipient_id: realUser.user_id,
       subject: "chat",
       body: text,
       status: "sent",
-    }]).select().single();
-    if (data) {
-      setRealMessages((prev) => {
-        if (prev.some((m) => m.message_id === data.message_id)) return prev;
-        return [...prev, data];
-      });
-    }
+    }]);
+    // realtime subscription handles appending
   };
 
   const handleSendMock = () => {

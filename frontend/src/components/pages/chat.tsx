@@ -68,12 +68,14 @@ function Chat() {
           (msg.sender_id === ru?.user_id && msg.recipient_id === uid) ||
           (msg.sender_id === uid && msg.recipient_id === ru?.user_id);
 
-        if (isRelevant) {
-          setRealMessages((prev) => {
-            if (prev.some((m) => m.message_id === msg.message_id)) return prev;
-            return [...prev, msg];
-          });
-        }
+    if (isRelevant) {
+  setRealMessages((prev) => {
+    if (prev.some((m) => m.message_id === msg.message_id)) return prev;
+    return [...prev, msg].sort((a, b) => 
+      new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
+    );
+  });
+}
       })
       .subscribe();
 
@@ -121,7 +123,9 @@ function Chat() {
     status: "sent",
   }]);
   // realtime subscription will pick it up and append it
-};
+ };
+
+
 
   const handleSendMock = () => {
     if (!input.trim()) return;

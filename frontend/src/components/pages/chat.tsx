@@ -23,7 +23,7 @@ const mockMessages: Record<number, { from: string; text: string; time: string; s
   2: [{ from: "Marcus Thorne", text: "The meeting is pushed to 4 PM today.", time: "10:20 AM", self: false }],
   3: [{ from: "Sarah Chen", text: "Did you see the latest update from the repo?", time: "9:15 AM", self: false }],
   4: [{ from: "Alex", text: "Check out the new bento layout!", time: "8:00 AM", self: false }],
-];
+};
 
 function Chat() {
   const [selectedMock, setSelectedMock] = useState(mockUsers[0]);
@@ -38,6 +38,8 @@ function Chat() {
   const realUserRef = useRef<any>(null);
   const currentUserIdRef = useRef<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Guards against an older, slower loadMessages() overwriting a newer one.
+  const loadSeq = useRef(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,12 +82,24 @@ function Chat() {
   }, [realUser?.user_id, currentUserId]);
 
   const loadMessages = async (user: any, userId: string) => {
-    const { data } = await supabase
+    const seq = ++loadSeq.current;
+    const { data, error } = await supabase
       .from("messages")
       .select("*")
       .or(`and(sender_id.eq.${userId},recipient_id.eq.${user.user_id}),and(sender_id.eq.${user.user_id},recipient_id.eq.${userId})`)
       .order("sent_at", { ascending: true });
-    setRealMessages(data || []);
+
+    if (error) { console.error("loadMessages error:", error); return; }
+    // A newer load started while this one was in flight; drop this stale result.
+    if (seq !== loadSeq.current) return;
+
+    // Client-side sort as insurance: if sent_at is briefly null right after an
+    // insert, the DB-side order is arbitrary, so we re-sort here defensively.
+    const sorted = (data || [])
+      .slice()
+      .sort((a, b) => new Date(a.sent_at ?? 0).getTime() - new Date(b.sent_at ?? 0).getTime());
+
+    setRealMessages(sorted);
   };
 
   const handleSearch = async (query: string) => {
@@ -112,13 +126,15 @@ function Chat() {
     if (!input.trim() || !realUser || !currentUserId) return;
     const text = input;
     setInput("");
-    await supabase.from("messages").insert([{
+    const { error } = await supabase.from("messages").insert([{
       sender_id: currentUserId,
       recipient_id: realUser.user_id,
       subject: "chat",
       body: text,
       status: "sent",
+      sent_at: new Date().toISOString(), // ensure the sort key exists immediately
     }]);
+    if (error) console.error("send error:", error);
     // realtime subscription handles appending
   };
 

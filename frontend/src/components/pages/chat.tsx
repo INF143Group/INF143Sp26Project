@@ -33,6 +33,7 @@ function Chat() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [realUser, setRealUser] = useState<any>(null);
+  const [conversations, setConversations] = useState<any[]>([]);
   const [realMessages, setRealMessages] = useState<any[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const realUserRef = useRef<any>(null);
@@ -49,6 +50,48 @@ function Chat() {
       currentUserIdRef.current = id;
     });
   }, []);
+
+  // Build the sidebar conversation list from the DB so chats persist across reloads.
+  useEffect(() => {
+    if (!currentUserId) return;
+    loadConversations(currentUserId);
+  }, [currentUserId]);
+
+  const loadConversations = async (userId: string) => {
+    // Every message I sent or received.
+    const { data: msgs, error } = await supabase
+      .from("messages")
+      .select("sender_id, recipient_id, body, sent_at")
+      .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`)
+      .order("sent_at", { ascending: false });
+    if (error) { console.error("loadConversations error:", error); return; }
+
+    // Collapse to the most recent message per other-party.
+    const latestByUser = new Map<string, any>();
+    for (const m of msgs || []) {
+      const otherId = m.sender_id === userId ? m.recipient_id : m.sender_id;
+      if (!otherId) continue;
+      if (!latestByUser.has(otherId)) latestByUser.set(otherId, m);
+    }
+
+    const otherIds = [...latestByUser.keys()];
+    if (otherIds.length === 0) { setConversations([]); return; }
+
+    // Fetch those users' profiles.
+    const { data: users } = await supabase
+      .from("users")
+      .select("user_id, username, display_name")
+      .in("user_id", otherIds);
+
+    const convos = (users || []).map((u) => ({
+      ...u,
+      lastMessage: latestByUser.get(u.user_id)?.body ?? "",
+      lastAt: latestByUser.get(u.user_id)?.sent_at ?? null,
+    }));
+    // Most recent conversation first.
+    convos.sort((a, b) => new Date(b.lastAt ?? 0).getTime() - new Date(a.lastAt ?? 0).getTime());
+    setConversations(convos);
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -135,6 +178,7 @@ function Chat() {
       sent_at: new Date().toISOString(), // ensure the sort key exists immediately
     }]);
     if (error) console.error("send error:", error);
+    else loadConversations(currentUserId); // keep sidebar fresh / add new convos
     // realtime subscription handles appending
   };
 
@@ -155,17 +199,23 @@ function Chat() {
           </div>
           <input className="chat-search" type="text" placeholder="Search conversations..." />
           <div className="chat-user-list">
-            {realUser && (
-              <div className="chat-user-item active" onClick={() => setSelectedMock(null as any)}>
+            {conversations.map((u) => (
+              <div
+                key={u.user_id}
+                className={`chat-user-item ${realUser?.user_id === u.user_id ? "active" : ""}`}
+                onClick={() => handleSelectRealUser(u)}
+              >
                 <div className="chat-avatar" style={{ background: "#6c63ff" }}>
-                  {realUser.username.slice(0, 2).toUpperCase()}
+                  {(u.username || "?").slice(0, 2).toUpperCase()}
                 </div>
                 <div className="chat-user-info">
-                  <span className="chat-user-name">{realUser.display_name || realUser.username}</span>
-                  <span className="chat-user-preview">@{realUser.username}</span>
+                  <span className="chat-user-name">{u.display_name || u.username}</span>
+                  <span className="chat-user-preview">
+                    {u.lastMessage ? u.lastMessage.slice(0, 30) : `@${u.username}`}
+                  </span>
                 </div>
               </div>
-            )}
+            ))}
             {mockUsers.map((user) => (
               <div key={user.id} className={`chat-user-item ${selectedMock?.id === user.id ? "active" : ""}`}
                 onClick={() => { setSelectedMock(user); setRealUser(null); }}>

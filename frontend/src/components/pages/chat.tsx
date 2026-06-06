@@ -239,7 +239,7 @@ function Chat() {
                       )}
                     </div>
                   </div>
-                )))}
+                ))}
                 <div ref={messagesEndRef} />
               </>
             ) : (

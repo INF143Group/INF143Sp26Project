@@ -52,15 +52,14 @@ function App() {
 
                     <div className="feature-grid">
                         <div className="feature-cell">
-                            <div className="feature-icon">🎥</div>
                             <div className="feature-title">Live video rooms</div>
                             <div className="feature-desc">Join a private room with your interview partner. Camera and
                                 microphone work directly in the browser, no downloads required.</div>
                         </div>
                         <div className="feature-cell">
-                            <div className="feature-title">Shared code editor</div>
-                            <div className="feature-desc">Both participants see edits in real time. Supports multiple
-                                languages with syntax highlighting and run-in-browser execution.</div>
+                            <div className="feature-title">Built in IDE</div>
+                            <div className="feature-desc">Tests your code in real time. Supports multiple
+                                languages and run-in-browser execution.</div>
                         </div>
                         <div className="feature-cell">
                             <div className="feature-title">Curated problem library</div>

@@ -221,7 +221,9 @@ function Chat() {
           <div className="chat-messages">
             {realUser ? (
               <>
-                {realMessages.map((msg, i) => (
+                {[...realMessages]
+                  .sort((a, b) => new Date(a.sent_at ?? 0).getTime() - new Date(b.sent_at ?? 0).getTime())
+                  .map((msg, i) => (
                   <div key={msg.message_id || i} className={`chat-message ${msg.sender_id === currentUserId ? "self" : "other"}`}>
                     {msg.sender_id !== currentUserId && (
                       <div className="chat-avatar small" style={{ background: "#6c63ff" }}>
@@ -237,7 +239,7 @@ function Chat() {
                       )}
                     </div>
                   </div>
-                ))}
+                )))}
                 <div ref={messagesEndRef} />
               </>
             ) : (

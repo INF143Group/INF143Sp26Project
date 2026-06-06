@@ -65,3 +65,7 @@
     color: #c12f2f !important;
     text-shadow: 0 0 8px rgba(237, 169, 169, 0.8);
 }
+
+.fc-event-time{
+    color: #025EE8;
+}

@@ -66,28 +66,28 @@ const handleCreate = async () => {
               <div className="login-card">
                   <div className="login-form">
 
-                      <label className="login-label">Email</label>
-                      <input type="email" className="login-input" value={email}
+                      <label htmlFor="email-input" className="login-label">Email</label>
+                      <input id="email-input" type="email" className="login-input" value={email}
                              onChange={(e) => setEmail(e.target.value)} />
 
-                      <label className="login-label">Username</label>
-                      <input type="text" className="login-input" value={username}
+                      <label htmlFor="username-input" className="login-label">Username</label>
+                      <input id="username-input" type="text" className="login-input" value={username}
                              onChange={(e) => setUsername(e.target.value)} />
 
-                      <label className="login-label">Phone Number</label>
-                      <input type="tel" className="login-input" value={phone}
+                      <label htmlFor="phone-input" className="login-label">Phone Number</label>
+                      <input id="phone-input" type="tel" className="login-input" value={phone}
                              onChange={(e) => setPhone(e.target.value)} />
 
-                      <label className="login-label">LinkedIn</label>
-                      <input type="text" className="login-input" value={linkedin}
+                      <label htmlFor="linkedin-input" className="login-label">LinkedIn</label>
+                      <input id="linkedin-input" type="text" className="login-input" value={linkedin}
                              onChange={(e) => setLinkedin(e.target.value)} />
 
-                      <label className="login-label">Password</label>
-                      <input type="password" className="login-input" value={password}
+                      <label htmlFor="password-input" className="login-label">Password</label>
+                      <input id="password-input" type="password" className="login-input" value={password}
                              onChange={(e) => setPassword(e.target.value)} />
 
-                      <label className="login-label">Confirm Password</label>
-                      <input type="password" className="login-input" value={confirmPassword}
+                      <label htmlFor="confirm-password-input" className="login-label">Confirm Password</label>
+                      <input id="confirm-password-input" type="password" className="login-input" value={confirmPassword}
                              onChange={(e) => setConfirmPassword(e.target.value)} />
 
                       <button className="login-submit-btn" onClick={handleCreate}>

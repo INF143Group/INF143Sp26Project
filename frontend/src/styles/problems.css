@@ -90,6 +90,10 @@ html, body {
     flex-shrink: 0 !important;
 }
 
+.problem-loading{
+    color: #202020
+}
+
 .problems-list,
 .problems-display,
 .problems-ide {
@@ -103,3 +107,4 @@ html, body {
     min-width: 0;
     min-height: 0;
 }
+

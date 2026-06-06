@@ -98,7 +98,7 @@ html, body {
     font-weight: 500;
     padding: 10px 20px;
     border-radius: 8px;
-    background: #1d9e75;
+    background: #115F46;
     color: #fff;
     border: none;
     cursor: pointer;
@@ -198,7 +198,7 @@ html, body {
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #999;
+    color: #1c1c1c;
     margin-bottom: 0.75rem;
 }
 
@@ -242,7 +242,7 @@ html, body {
 
 .stat-lbl {
     font-size: 12px;
-    color: #777;
+    color: #474747;
     margin-top: 2px;
 }
 
@@ -305,13 +305,12 @@ html, body {
 
 .cta-band p {
     font-size: 1rem;
-    color: #5dcaa5;
+    color: #C8E5DC;
     margin-bottom: 2rem;
     line-height: 1.6;
 }
 
 .cta-band .btn-primary {
-    background: #1d9e75;
     font-size: 15px;
     padding: 12px 28px;
 }

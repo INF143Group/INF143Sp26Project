@@ -65,6 +65,7 @@ function Help() {
         <button className="login-top-btn" onClick={() => navigate("/")}>Back</button>
         <div className="login-card">
           <div className="login-form">
+            <h1>Help Form</h1>
           <textarea
               placeholder="How can we help?"
               value={problem}

@@ -129,7 +129,7 @@
 
 .chat-main-role {
   font-size: 12px;
-  color: #888;
+  color: #696969;
   margin: 0;
 }
 
@@ -160,7 +160,7 @@
 }
 
 .chat-message.self .chat-bubble {
-  background: #6c63ff;
+  background: #a29ef8;
   color: black;
 }
 
@@ -172,13 +172,13 @@
 .chat-time {
   display: block;
   font-size: 11px;
-  color: #aaa;
+  color: #6B6B6B;
   margin-top: 4px;
   text-align: right;
 }
 
 .chat-message.self .chat-time {
-  color: rgba(255,255,255,0.7);
+  color: #2c2c2c;
 }
 
 .chat-input-area {

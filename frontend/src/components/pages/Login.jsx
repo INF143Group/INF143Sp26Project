@@ -43,16 +43,18 @@ const handleKeyDown = (event) => {
 
         <div className="login-card">
           <div className="login-form">
-            <label className="login-label">Email</label>
+            <label htmlFor="email-input" className="login-label">Email</label>
             <input
+                id="email-input"
                 type="email"
                 className="login-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder=""
             />
-            <label className="login-label">Password</label>
+            <label htmlFor="password-input" className="login-label">Password</label>
             <input
+                id="password-input"
                 type="password"
                 className="login-input"
                 value={password}

@@ -109,11 +109,11 @@
 }
 
 .login-create-link {
-  color: mediumpurple;
+  color: #5F32B8;
   cursor: pointer;
   text-decoration: underline;
 }
 
 .login-create-link:hover {
-  color: darkslateblue;
+  color: rgb(41, 35, 79);
 }

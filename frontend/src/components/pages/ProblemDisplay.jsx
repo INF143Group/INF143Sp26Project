@@ -1,7 +1,7 @@
 const difficultyColor = {
-    Easy: '#4caf7d',
-    Medium: '#f0a500',
-    Hard: '#e05c5c',
+    Easy: '#357957',
+    Medium: '#8F6200',
+    Hard: '#CE2727',
 };
 
 const ProblemDisplay = ({ problem, dropdownMode = false }) => {

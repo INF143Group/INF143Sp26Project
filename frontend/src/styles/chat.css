@@ -1,5 +1,6 @@
 .chat-sidebar {
   width: 280px;
+  flex-shrink: 0;
   background: #fff;
   border-right: 1px solid #e5e5e5;
   display: flex;
@@ -108,6 +109,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .chat-main-header {
@@ -249,8 +251,9 @@
 .chat-wrapper {
   display: flex;
   height: calc(100vh - 94px);
-  width: 100%;
+  width: 100vw;
+  max-width: 100%;
   background: #f0ebe3;
   font-family: sans-serif;
-  min-width: 700px;
+  overflow-x: hidden;
 }

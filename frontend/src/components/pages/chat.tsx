@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase.js";
 import "../../styles/chat.css";
 import sendIcon from '../../assets/send.png';
@@ -22,8 +21,9 @@ const mockMessages: Record<number, { from: string; text: string; time: string; s
   ],
   2: [{ from: "Marcus Thorne", text: "The meeting is pushed to 4 PM today.", time: "10:20 AM", self: false }],
   3: [{ from: "Sarah Chen", text: "Did you see the latest update from the repo?", time: "9:15 AM", self: false }],
-  4: [{ from: "Alex", text: "Check out the new bento layout!", time: "8:00 AM", self: false }],
-];
+  4: [{ from: "Alex", text: "Check out the new bento layout!", time: "8:00 AM", self: false }]
+}
+
 
 function Chat() {
   const [selectedMock, setSelectedMock] = useState(mockUsers[0]);
@@ -38,7 +38,6 @@ function Chat() {
   const realUserRef = useRef<any>(null);
   const currentUserIdRef = useRef<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -135,7 +134,14 @@ function Chat() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minWidth: '700px' }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      maxWidth: '100vw',
+      overflowX: 'hidden'
+    }}>
+
       <div className="div1" id="nav-bar"><NavBar /></div>
       <div className="chat-wrapper">
         <div className="chat-sidebar">
